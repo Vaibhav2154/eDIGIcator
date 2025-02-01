@@ -1,37 +1,10 @@
-// controllers/textbook.controller.js
-import { 
-  extractAndProcessText, 
-  generateAnswer 
-} from '../services/textbook.service.js';
+import mongoose from 'mongoose'
 
-export const ask = async (req, res) => {
-  try {
-      const { textbookUrl, question, preferredLanguage = 'English' } = req.body;
+const TextbookSchema = new mongoose.Schema({
+  subject: { type: String, required: true },
+  title: { type: String, required: true },
+  textbookUrl: { type: String, required: true }, // Link to the textbook
+  class:{type:Number,required:true}
+});
 
-      if (!textbookUrl) {
-          return res.status(400).json({ error: 'Textbook URL is required' });
-      }
-
-      if (!question) {
-          return res.status(400).json({ error: 'Question is required' });
-      }
-
-      // Process textbook and get relevant chunks
-      const relevantChunks = await extractAndProcessText(textbookUrl, question);
-
-      // Generate answer using the relevant chunks
-      const answer = await generateAnswer(question, relevantChunks, preferredLanguage);
-
-      res.json({ 
-          answer: answer.content,
-          contextUsed: relevantChunks.length
-      });
-
-  } catch (error) {
-      console.error('Error processing request:', error);
-      res.status(500).json({ 
-          error: 'Error processing request',
-          message: error.message 
-      });
-  }
-};
+export default mongoose.model("Textbook", TextbookSchema);
