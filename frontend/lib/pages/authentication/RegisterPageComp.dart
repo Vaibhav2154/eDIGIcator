@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:edigicator/pages/HomePage.dart';
+import 'package:edigicator/pages/OnboardingPage.dart'; // Import OnboardingPage
+
 class RegisterPageComp extends StatefulWidget {
   const RegisterPageComp({super.key});
 
@@ -122,10 +123,9 @@ class _RegisterPageState extends State<RegisterPageComp> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(builder: (context) => const HomePage()),
-);
-
+                      context,
+                      MaterialPageRoute(builder: (context) => const OnboardingPage()), // Navigate to OnboardingPage
+                    );
                   },
                   child: const Text('Register', style: TextStyle(fontSize: 18)),
                 ),
