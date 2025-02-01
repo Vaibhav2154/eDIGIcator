@@ -1,66 +1,41 @@
 import 'dart:convert';
+import 'package:edigicator/services/translation_service.dart';
 import 'package:edigicator/services/language_provide.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/translation_service.dart';
 import 'package:http/http.dart' as http;
-
-import 'dart:convert';
 import 'package:edigicator/pages/latestnewspage.dart';
 import 'package:edigicator/pages/chat_page.dart'; // Import Chatbot Page
-import 'package:edigicator/pages/compihome.dart'; // Import Compihome Page
-//import 'package:edigicator/pages/syllabushome.dart'; // Import Syllabushome Page
+import 'package:edigicator/pages/compihome.dart' as compi;
+import 'package:edigicator/pages/syllabushome.dart';// Import Compihome Page
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
-  Future<String> fetchQuote(WidgetRef ref) async {
+  
+
+    @override
+    ConsumerState<HomePage> createState() => _HomePageState();
+  }
+  
+  class _HomePageState extends ConsumerState<HomePage> {
+    int _selectedIndex = 1;
+   Future<String> fetchQuote(WidgetRef ref) async {
     final String currentLanguage = ref.watch(languageProvider);
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 1; // Default selected tab (Home)
-
-  Future<String> fetchQuote() async {
     final response = await http.get(Uri.parse('https://zenquotes.io/api/random'));
+
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       final String quote = data[0]['q'];
       // Translate the quote to the current language
-      return TranslationService.translateText(quote, currentLanguage);
-      return data[0]['q'];
+      return await TranslationService.translateText(quote, currentLanguage);
     } else {
       throw Exception('Failed to load quote');
     }
   }
-
-  void _navigateToPage(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
-        break;
-      case 1:
-        break;
-      case 2:
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ChatScreen()));
-        break;
-      case 3:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const QnaPage()));
-        break;
-      case 4:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage()));
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+    @override
+   
+    Widget build(BuildContext context) {
     final String currentLanguage = ref.watch(languageProvider);
 
     return Scaffold(
@@ -139,7 +114,6 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 subtitle: const Text('Tap here to view the latest news.'),
-                onTap: () {},
                 onTap: () {
                   Navigator.push(
                     context,
@@ -160,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Compihome()), // Navigate to Compihome
+                        MaterialPageRoute(builder: (context) =>  compi.Compihome(),), // Navigate to Compihome
                       );
                     },
                     child: _buildImageCard('assets/competitve.jpg', 'Competitive'),
@@ -172,10 +146,10 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                    //  Navigator.push(
-                     //   context,
-                     //   MaterialPageRoute(builder: (context) => const Syllabushome()), // Navigate to Syllabushome
-                     // );
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  Syllabushome()), // Navigate to SyllabusHome
+                      );
                     },
                     child: _buildImageCard('assets/syllabus.jpg', 'Syllabus'),
                   ),
@@ -255,5 +229,28 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+
+  void _navigateToPage(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+        break;
+      case 1:
+        break;
+      case 2:
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ChatScreen()));
+        break;
+      case 3:
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => const QnaPage()));
+        break;
+      case 4:
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage()));
+        break;
+    }
   }
 }
