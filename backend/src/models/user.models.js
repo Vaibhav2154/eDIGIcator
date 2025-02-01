@@ -47,7 +47,7 @@ const userSchema = new Schema(
     user_type: {
       type: String,
       required: true,
-      enum: ["user", "teacher", "admin"],
+      enum: ["Student", "Teacher", "Admin"],
     },
     lastLoginDate: {
       type: Date,
@@ -96,7 +96,6 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      email: this.email,
       username: this.username,
       fullName: this.fullName,
     },
