@@ -1,15 +1,12 @@
-// import express from 'express';
-// import { fetchAndStoreNews, getLatestNews, getNewsByCategory } from '../controllers/news.controller.js';
+import express from "express";
+import { fetchAllCategoriesNews, getNewsByCategory } from "../controllers/news.controller.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // ✅ 1️⃣ Route to fetch and store news articles from the News API
-// router.get('/fetch-and-store', fetchAndStoreNews);
+// ✅ Fetch news for all categories (National, External, Sports, etc.)
+router.get("/fetch-news", fetchAllCategoriesNews);
 
-// // ✅ 2️⃣ Route to get the latest news (from the database)
-// router.get('/latest', getLatestNews);
+// ✅ Get news by category (e.g., National, External, Sports)
+router.get("/:category", getNewsByCategory);
 
-// // ✅ 3️⃣ Route to get news articles by category (education, technology, farming, etc.)
-// router.get('/category/:category', getNewsByCategory);
-
-// export default router;
+export default router;
