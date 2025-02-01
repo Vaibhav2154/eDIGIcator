@@ -63,7 +63,6 @@ const sendMessagesAutomatically = async () => {
   }
 };
 
-// Schedule the cron job to run every minute (or adjust to a suitable time)
 cron.schedule('* * * * *', sendMessagesAutomatically);
 
 export { sendMessagesAutomatically };

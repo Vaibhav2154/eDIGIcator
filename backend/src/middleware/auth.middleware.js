@@ -1,12 +1,12 @@
 import { ApiError } from "../utils/API_Error.js";
 import asyncHandler from "../utils/asynchandler.utils.js";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
-import { Parent } from "../models/parent.model.js";
-import { Counsellor } from "../models/counsellor.model.js";
+import { User } from "../models/user.models.js";
+// import { Parent } from "../models/parent.model.js";
+// import { Counsellor } from "../models/counsellor.model.js";
 
 // Helper function
-const verifyJWT = async (token, model, role) => {
+export const verifyJWT = async (token, model, role) => {
   try {
     if (!token) {
       throw new ApiError(401, "Unauthorized request");
@@ -42,22 +42,22 @@ export const user_verifyJWT = asyncHandler(async (req, _, next) => {
   next();
 });
 
-export const teacher_verifyJWT = asyncHandler(async (req, _, next) => {
-  const token =
-    req.cookies?.accessToken ||
-    req.header("Authorization")?.replace("Bearer ", "");
+// export const teacher_verifyJWT = asyncHandler(async (req, _, next) => {
+//   const token =
+//     req.cookies?.accessToken ||
+//     req.header("Authorization")?.replace("Bearer ", "");
 
-  const parent = await verifyJWT(token, Parent, "Parent");
-  req.parent = parent;
-  next();
-});
+//   const parent = await verifyJWT(token, Parent, "Parent");
+//   req.parent = parent;
+//   next();
+// });
 
-export const admin_verifyJWT = asyncHandler(async (req, _, next) => {
-  const token =
-    req.cookies?.accessToken ||
-    req.header("Authorization")?.replace("Bearer ", "");
+// export const admin_verifyJWT = asyncHandler(async (req, _, next) => {
+//   const token =
+//     req.cookies?.accessToken ||
+//     req.header("Authorization")?.replace("Bearer ", "");
 
-  const counsellor = await verifyJWT(token, Counsellor, "Counsellor");
-  req.counsellor = counsellor;
-  next();
-});
+//   const counsellor = await verifyJWT(token, Counsellor, "Counsellor");
+//   req.counsellor = counsellor;
+//   next();
+// });

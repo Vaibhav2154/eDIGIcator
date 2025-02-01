@@ -1,6 +1,6 @@
-const dotenv = require("dotenv");
-const connectDB = require("./db/connect.js");
-const app  = require("./app.js");
+import dotenv from "dotenv";
+import connectDB from "./utils/db.connect.js";
+import app from "./app.js";
 
 dotenv.config({
     path: "./.env"
