@@ -14,7 +14,6 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: true,
       unique: true,
       lowecase: true,
       trim: true,
@@ -25,6 +24,7 @@ const userSchema = new Schema(
       trim: true,
       index: true,
     },
+    mobile: Number,
     profileImage: {
       type: String, // cloudinary url
     },
@@ -46,10 +46,38 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "question",
     },
-    dept: {
-      type: Schema.Types.ObjectId,
-      ref: "Dept",
-    }
+    class_no: Number,
+    user_type: {
+      type: String,
+      required: true,
+      enum: ["user", "teacher", "admin"],
+    },
+    lastLoginDate: {
+      type: Date,
+    },
+    streak: {
+      type: Number,
+      default: 0,
+    },
+    maxStreak: {
+      type: Number,
+      default: 0,
+    },
+    bedTime: {
+      type: Date,
+    },
+    studyTime: {
+      type: Date,
+    },
+    schoolTime: {
+      start: {
+        type: Date,
+      },
+      end: {
+        type: Date,
+      },
+    },  
+    refreshToken: String,
   },
   {
     timestamps: true,
