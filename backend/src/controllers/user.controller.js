@@ -27,7 +27,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     
       // Validate fields
       if (
-        [fullName, email, username, password].some((field) => field?.trim() === "")
+        [fullName, username, password].some((field) => field?.trim() === "")
       ) {
         throw new ApiError(400, "All fields are required");
       }
