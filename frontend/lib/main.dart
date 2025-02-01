@@ -1,21 +1,12 @@
 import 'package:edigicator/pages/HomePage.dart';
 import 'package:edigicator/pages/authentication/loginpage.dart';
-import 'package:edigicator/pages/chat_page.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'theme/theme.dart';
 
 void main() {
-  runApp(const App());
+  runApp(const ProviderScope(child: App()));
 }
-final theme = ThemeData(
-  useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(
-    brightness: Brightness.light,
-    seedColor: const Color.fromARGB(255, 243, 170, 220),
-  ),
-  textTheme: GoogleFonts.latoTextTheme(),
-);
-
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -25,8 +16,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: theme,
-      home: LoginPage(),
-
+      home: const LoginPage(),
     );
   }
 }

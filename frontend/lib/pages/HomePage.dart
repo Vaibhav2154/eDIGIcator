@@ -1,14 +1,21 @@
+import 'dart:convert';
+import 'package:edigicator/services/language_provide.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/translation_service.dart';
 import 'package:http/http.dart' as http;
+
 import 'dart:convert';
 import 'package:edigicator/pages/latestnewspage.dart';
 import 'package:edigicator/pages/chat_page.dart'; // Import Chatbot Page
 import 'package:edigicator/pages/compihome.dart'; // Import Compihome Page
 //import 'package:edigicator/pages/syllabushome.dart'; // Import Syllabushome Page
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
+  Future<String> fetchQuote(WidgetRef ref) async {
+    final String currentLanguage = ref.watch(languageProvider);
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -18,9 +25,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<String> fetchQuote() async {
     final response = await http.get(Uri.parse('https://zenquotes.io/api/random'));
-
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      final String quote = data[0]['q'];
+      // Translate the quote to the current language
+      return TranslationService.translateText(quote, currentLanguage);
       return data[0]['q'];
     } else {
       throw Exception('Failed to load quote');
@@ -51,7 +60,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String currentLanguage = ref.watch(languageProvider);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -75,7 +86,11 @@ class _HomePageState extends State<HomePage> {
             const Spacer(flex: 2),
             DropdownButton<String>(
               icon: const Icon(Icons.language),
-              onChanged: (String? newValue) {},
+              value: currentLanguage == "en" ? "English" : "Kannada",
+              onChanged: (String? newValue) {
+                final newLanguageCode = newValue == "English" ? "en" : "kn";
+                ref.read(languageProvider.notifier).state = newLanguageCode;
+              },
               items: <String>['English', 'Kannada']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -93,7 +108,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<String>(
-              future: fetchQuote(),
+              future: fetchQuote(ref),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -124,6 +139,7 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 subtitle: const Text('Tap here to view the latest news.'),
+                onTap: () {},
                 onTap: () {
                   Navigator.push(
                     context,
