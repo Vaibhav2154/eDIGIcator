@@ -37,6 +37,9 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.1.2
   http:
+  intl: ^0.20.2
+  permission_handler: ^11.3.1
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
