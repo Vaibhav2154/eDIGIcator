@@ -67,19 +67,21 @@ export const insertDefaultVideos = async () => {
     }
 };
 
-
-// ✅ 2️⃣ Fetch Videos by Class & Subject (For Users)
 export const getVideosByClassAndSubject = async (req, res) => {
     try {
-        const { classNumber, subject } = req.params;
-        const videos = await Video.find({ class: classNumber, subject: subject }).sort({ module: 1 });
-
-        if (videos.length === 0) {
-            return res.status(404).json({ message: "No videos found for this class and subject." });
-        }
-
-        res.status(200).json(videos);
+      // Get parameters from the route (path params)
+      const { classNumber, subject } = req.params;
+      
+      // Find the videos matching the class and subject
+      const videos = await Video.find({ class: classNumber, subject: subject }).sort({ module: 1 });
+  
+      if (videos.length === 0) {
+        return res.status(404).json({ message: "No videos found for this class and subject." });
+      }
+  
+      res.status(200).json(videos);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+      res.status(500).json({ message: "Server error", error });
     }
-};
+  };
+  
