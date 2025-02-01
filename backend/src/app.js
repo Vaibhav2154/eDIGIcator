@@ -3,11 +3,10 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import videoRouter from './routes/Video.routes.js';
 import userRouter from './routes/user.routes.js';
-// import questionRouter from './routes/question.route.js';
+import questionRouter from './routes/question.routes.js';
 // import answerRouter from './routes/answer.route.js';
 // import replyRouter from './routes/reply.route.js';
 import dotenv from 'dotenv';
-import { insertDefaultVideos } from './controllers/Video.controller.js';
 dotenv.config();
 const app = express();
 
@@ -28,7 +27,7 @@ app.use(cookieParser());
 
 app.use('/api/videos',videoRouter)
 app.use('/api/users', userRouter);
-// app.use('/api/questions', questionRouter);
+app.use('/api/questions', questionRouter);
 // app.use('/api/answers', answerRouter);
 // app.use('/api/reply', replyRouter);
 
