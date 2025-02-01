@@ -24,7 +24,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
   };
   const registerUser = asyncHandler(async (req, res) => {
-      const { fullName, username, password, userClass, user_type, mobile} = req.body;
+      const { fullName, username, password, userClass, user_type, mobile,} = req.body;
       
       // Validate fields
       if (

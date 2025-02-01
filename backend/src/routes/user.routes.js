@@ -37,5 +37,5 @@ router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 router.route("/updateSchedule").patch(updateUserSchedule);
 router.route("/user/userStats").get(verifyJWT, getUserStats);
 router.route("/profileimage").patch(verifyJWT, upload.single("profileImage"), updateUserDP);
-
+router.route("/updateSchedule").patch(updateUserSchedule);
 export default router;

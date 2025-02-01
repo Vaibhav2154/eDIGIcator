@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const { Schema } = mongoose;
 
 const questionSchema = new Schema(
@@ -17,13 +16,14 @@ const questionSchema = new Schema(
         type: String, // Cloudinary URL
       },
     ],
-    relatedTags: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Tag',
-        required: [true, 'Related tags must be specified'],
-      },
-    ],
+    subject: {
+      type: String, // Changed from ObjectId reference to a string
+      required: true,
+    },
+    classLevel: {
+      type: String, // Changed from ObjectId reference to a string
+      required: true,
+    },
     answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
   },
   { timestamps: true }

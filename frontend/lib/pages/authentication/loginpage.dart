@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try {
-      var uri = Uri.parse("http://localhost:8000/api/users/login"); // API endpoint
+      var uri = Uri.parse("http://10.0.2.2:8000/api/users/login"); // API endpoint
 
       var response = await http.post(
         uri,

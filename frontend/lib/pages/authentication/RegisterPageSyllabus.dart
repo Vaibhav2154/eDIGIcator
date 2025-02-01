@@ -19,23 +19,21 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  String selectedClass = "5th Standard"; // Default selection
+  num selectedClass = 5; // Default selection as a number
+  String selectedUserType = "Student"; // Default usertype
   File? _profileImage;
 
-  final List<String> classList = [
-    "5th Standard",
-    "6th Standard",
-    "7th Standard",
-    "8th Standard",
-    "9th Standard",
-    "10th Standard",
-    "11 Standard",
-    "12 Standard"
+  final List<num> classList = [
+    5, 6, 7, 8, 9, 10, 11, 12
+  ];
+
+  final List<String> userTypeList = [
+    "Teacher",
+    "Student",
   ];
 
   Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _profileImage = File(pickedFile.path);
@@ -45,7 +43,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
 
   Future<void> _registerUser(BuildContext context) async {
     try {
-      var uri = Uri.parse("http://localhost:8000/api/users/register");
+      var uri = Uri.parse("http://10.0.2.2:8000/api/users/register");
 
       var request = http.MultipartRequest('POST', uri);
 
@@ -60,10 +58,11 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
 
       // Register user details
       request.fields['fullName'] = nameController.text;
-      request.fields['mobile'] = phoneController.text; // Using phoneNumber
+      request.fields['mobile'] = phoneController.text;
       request.fields['username'] = usernameController.text;
       request.fields['password'] = passwordController.text;
-      request.fields['userClass'] = selectedClass;
+      request.fields['userClass'] = selectedClass.toString(); // Convert to string for request
+      request.fields['user_type'] = selectedUserType; // Send user type
 
       var response = await request.send();
 
@@ -75,7 +74,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
         );
       } else {
         print('Registration failed: ${response.statusCode}');
-        // Display error message (can be improved with a UI)
+        // Display error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Registration failed: ${response.statusCode}')),
         );
@@ -156,14 +155,30 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               ),
             ),
             const SizedBox(height: 20),
-            DropdownButton<String>(
+            DropdownButton<num>(
               value: selectedClass,
-              onChanged: (String? newValue) {
+              onChanged: (num? newValue) {
                 setState(() {
                   selectedClass = newValue!;
                 });
               },
               items: classList
+                  .map<DropdownMenuItem<num>>((num value) {
+                return DropdownMenuItem<num>(
+                  value: value,
+                  child: Text(value.toString()),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            DropdownButton<String>(
+              value: selectedUserType,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedUserType = newValue!;
+                });
+              },
+              items: userTypeList
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -176,6 +191,8 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               onPressed: _pickImage,
               child: const Text("Pick Profile Image"),
             ),
+            if (_profileImage != null)
+              Image.file(_profileImage!, height: 100, width: 100),
             const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
