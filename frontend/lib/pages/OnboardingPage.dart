@@ -18,7 +18,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final TextEditingController schoolTimeController = TextEditingController();
   final TextEditingController goalController = TextEditingController();
 
-  Future<void> _selectTime(BuildContext context, Function(TimeOfDay) onTimeSelected) async {
+  Future<void> _selectTime(
+      BuildContext context, Function(TimeOfDay) onTimeSelected) async {
     final TimeOfDay? selectedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -31,9 +32,13 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   }
 
   String _timeOfDayToString(TimeOfDay? time) {
-    if (time == null) return ref.watch(languageProvider) == "en" ? 'Select Time' : 'ಸಮಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ';
+    if (time == null)
+      return ref.watch(languageProvider) == "en"
+          ? 'Select Time'
+          : 'ಸಮಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ';
     final now = DateTime.now();
-    return DateFormat.jm().format(DateTime(now.year, now.month, now.day, time.hour, time.minute));
+    return DateFormat.jm()
+        .format(DateTime(now.year, now.month, now.day, time.hour, time.minute));
   }
 
   void _saveSchedule() {
@@ -59,10 +64,13 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(getTranslatedText('Set Your Daily Schedule', 'ನಿಮ್ಮ ದೈನಂದಿನ ವೇಳಾಪಟ್ಟಿಯನ್ನು ಹೊಂದಿಸಿ')),
+            Align(
+              alignment: Alignment.center,
+              child: Text(getTranslatedText('Daily Schedule', 'ದೈನಂದಿನ ವೇಳಾಪಟ್ಟಿ'))),
             const SizedBox(height: 5),
             Text(
-              getTranslatedText('Lets get to know you more', 'ನಿಮ್ಮ ಬಗ್ಗೆ ಹೆಚ್ಚು ತಿಳಿದುಕೊಳ್ಳೋಣ'),
+              getTranslatedText('Lets get to know you more',
+                  'ನಿಮ್ಮ ಬಗ್ಗೆ ಹೆಚ್ಚು ತಿಳಿದುಕೊಳ್ಳೋಣ'),
               style: const TextStyle(fontSize: 16),
             ),
           ],
@@ -120,7 +128,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     'School Timings (e.g. 9:00 AM - 3:00 PM)',
                     'ಶಾಲೆಯ ಸಮಯ (ಉದಾ. 9:00 AM - 3:00 PM)',
                   ),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   prefixIcon: const Icon(Icons.access_time),
                 ),
               ),
@@ -132,7 +141,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     'What is your life goal? (e.g. Scientist, Agriculturist)',
                     'ನಿಮ್ಮ ಜೀವನದ ಗುರಿ ಏನು? (ಉದಾ. ವಿಜ್ಞಾನಿ, ಕೃಷಿಕ)',
                   ),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   prefixIcon: const Icon(Icons.lightbulb_outline),
                 ),
               ),

@@ -1,5 +1,6 @@
+import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 import 'package:flutter/material.dart';
-import 'package:edigicator/pages/authentication/RegisterSelectionPage.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,12 +44,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Login Page',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
+        title: Align(
+          alignment: Alignment.center,
+          child: Text(
+            'Login',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -162,7 +167,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterSelectionPage()),
+                        MaterialPageRoute(builder: (context) => RegisterPageSyllabus()),
                       );
                     },
                     child: const Text("Register"),

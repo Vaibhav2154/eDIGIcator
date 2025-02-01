@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:edigicator/services/translation_service.dart';
-import 'package:edigicator/services/language_provide.dart';
+import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -87,7 +87,7 @@ class HomePage extends ConsumerStatefulWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<String>(
-              future: fetchQuote(),
+              future: fetchQuote(ref),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -238,5 +238,10 @@ class HomePage extends ConsumerStatefulWidget {
         // Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage()));
         break;
     }
+}
+  String getTranslatedText(String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
   }
+  
 }

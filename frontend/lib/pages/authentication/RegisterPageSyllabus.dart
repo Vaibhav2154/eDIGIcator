@@ -40,7 +40,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register for Syllabus Exams')),
+      appBar: AppBar(title: const Text('Register')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(

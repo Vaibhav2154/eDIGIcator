@@ -1,39 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:edigicator/pages/subjects/englishhome.dart';
+import 'package:edigicator/pages/subjects/kannadahome.dart';
+import 'package:edigicator/pages/subjects/socialhome.dart';
+import 'package:edigicator/pages/subjects/sciencehome.dart';
+import 'package:edigicator/pages/subjects/mathshome.dart';
+import 'package:edigicator/services/language_provider.dart'; // Import the language provider
 
-// Import your respective subject pages
- import 'package:edigicator/pages/subjects/englishhome.dart';
- import 'package:edigicator/pages/subjects/kannadahome.dart';
- import 'package:edigicator/pages/subjects/socialhome.dart';
- import 'package:edigicator/pages/subjects/sciencehome.dart';
- import 'package:edigicator/pages/subjects/mathshome.dart';
-
-class Syllabushome extends StatelessWidget {
+class Syllabushome extends ConsumerWidget {
   const Syllabushome({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the current language from the provider
+    final String currentLanguage = ref.watch(languageProvider);
+
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // To remove the back button
-        title: const Text(
-          'Hello student', // Title of the AppBar
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        automaticallyImplyLeading: true, // To show the back button
+        title: Text(
+          getTranslatedText(ref, 'Hello student', 'ಹಲೋ ವಿದ್ಯಾರ್ಥಿ'), // Translated title
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          // Language Switcher Dropdown
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: DropdownButton<String>(
+              icon: const Icon(Icons.language),
+              value: currentLanguage == "en" ? "English" : "Kannada",
+              onChanged: (String? newValue) {
+                final newLanguageCode = newValue == "English" ? "en" : "kn";
+                ref.read(languageProvider.notifier).state = newLanguageCode; // Update language
+              },
+              items: <String>['English', 'Kannada']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, // Keep content aligned to the top
-          crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // "Welcome" Text moved to the top of the page
-            const Text(
-              'Welcome to the Syllabus Exams Section!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // Welcome Text (Translated)
+            Text(
+              getTranslatedText(
+                ref,
+                'Welcome to the Syllabus Exams Section!',
+                'ಸ್ವಾಗತ! ಸಿಲಬಸ್ ಪರೀಕ್ಷೆಗಳ ವಿಭಾಗಕ್ಕೆ',
+              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-
             // GridView to display the subjects with icons
             Expanded(
               child: GridView.count(
@@ -44,7 +71,7 @@ class Syllabushome extends StatelessWidget {
                 children: [
                   // English
                   SubjectCard(
-                    title: 'English',
+                    title: getTranslatedText(ref, 'English', 'ಇಂಗ್ಲಿಷ್'),
                     icon: Icons.language,
                     onTap: () {
                       Navigator.push(
@@ -55,7 +82,7 @@ class Syllabushome extends StatelessWidget {
                   ),
                   // Kannada
                   SubjectCard(
-                    title: 'Kannada',
+                    title: getTranslatedText(ref, 'Kannada', 'ಕನ್ನಡ'),
                     icon: Icons.language_outlined,
                     onTap: () {
                       Navigator.push(
@@ -66,7 +93,7 @@ class Syllabushome extends StatelessWidget {
                   ),
                   // Social
                   SubjectCard(
-                    title: 'Social',
+                    title: getTranslatedText(ref, 'Social', 'ಸಮಾಜಶಾಸ್ತ್ರ'),
                     icon: Icons.school,
                     onTap: () {
                       Navigator.push(
@@ -77,7 +104,7 @@ class Syllabushome extends StatelessWidget {
                   ),
                   // Science
                   SubjectCard(
-                    title: 'Science',
+                    title: getTranslatedText(ref, 'Science', 'ವಿಜ್ಞಾನ'),
                     icon: Icons.science,
                     onTap: () {
                       Navigator.push(
@@ -88,7 +115,7 @@ class Syllabushome extends StatelessWidget {
                   ),
                   // Maths
                   SubjectCard(
-                    title: 'Maths',
+                    title: getTranslatedText(ref, 'Maths', 'ಗಣಿತ'),
                     icon: Icons.calculate,
                     onTap: () {
                       Navigator.push(
@@ -104,6 +131,12 @@ class Syllabushome extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Helper function to get translated text based on the current language
+  String getTranslatedText(WidgetRef ref, String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
   }
 }
 
