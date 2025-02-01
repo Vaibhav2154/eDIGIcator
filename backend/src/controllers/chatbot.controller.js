@@ -1,8 +1,10 @@
-const express = require('express');
-const axios = require('axios');
-const { FaissIndexFlatL2 } = require('faiss-node');
-const { Translate } = require('@google-cloud/translate').v2;
-require('dotenv').config();
+import express from 'express';
+import axios from 'axios';
+import { FaissIndexFlatL2 } from 'faiss-node';
+import { Translate } from '@google-cloud/translate';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -105,7 +107,3 @@ const splitTextIntoChunks = (text, maxChunkSize) => {
   }
   return chunks;
 };
-
-// Server listening
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

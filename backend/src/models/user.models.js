@@ -46,10 +46,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "question",
     },
-    dept: {
-      type: Schema.Types.ObjectId,
-      ref: "Dept",
-    }
+    class_no: Number
   },
   {
     timestamps: true,
