@@ -1,7 +1,7 @@
+import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:edigicator/pages/OnboardingPage.dart';
-
+//import 'package:edigicator/pages/authentication/RegisterSelectionPage.dart';
+import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -42,7 +42,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        title: Align(
+          alignment: Alignment.center,
+          child: Text(
+            'Login',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(

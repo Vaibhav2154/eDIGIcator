@@ -1,5 +1,6 @@
+import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:edigicator/pages/HomePage.dart'; // Import the HomePage widget
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import the HomePage widget
 
 class SocialHome extends StatefulWidget {
   const SocialHome({super.key});
@@ -49,5 +50,11 @@ class _SocialHomeState extends State<SocialHome> {
         ],
       ),
     );
+  }
+
+  // Helper function to get translated text based on the current language
+  String getTranslatedText(WidgetRef ref, String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
   }
 }

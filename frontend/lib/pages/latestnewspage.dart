@@ -13,7 +13,7 @@ class _LatestNewsPageState extends State<LatestNewsPage> {
   int _selectedIndex = 0;
   int _page = 1;
   bool _isLoading = false;
-  List<dynamic> _articles = [];
+  final List<dynamic> _articles = [];
 
   final List<String> categories = ["national", "external", "sports", "technology", "education"];
   final String baseUrl = "http://YOUR_SERVER_IP:PORT/api/news"; // Replace with your backend URL

@@ -1,14 +1,15 @@
+import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:edigicator/pages/HomePage.dart'; // Import the HomePage widget
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScienceHome extends StatefulWidget {
+class ScienceHome extends ConsumerStatefulWidget {
   const ScienceHome({super.key});
 
   @override
   _ScienceHomeState createState() => _ScienceHomeState();
 }
 
-class _ScienceHomeState extends State<ScienceHome> {
+class _ScienceHomeState extends ConsumerState<ScienceHome> {
   int _selectedIndex = 0; // To keep track of the selected tab
 
   // List of pages corresponding to the tabs
@@ -32,7 +33,9 @@ class _ScienceHomeState extends State<ScienceHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Science Syllabus'),
+        title: Text(
+          getTranslatedText(ref, 'Science Syllabus', 'ವಿಜ್ಞಾನ ಸಿಲಬಸ್'),
+        ),
       ),
       body: _pages[_selectedIndex], // Render the selected page
       bottomNavigationBar: BottomNavigationBar(
@@ -54,5 +57,11 @@ class _ScienceHomeState extends State<ScienceHome> {
         ],
       ),
     );
+  }
+
+  // Helper function to get translated text based on the current language
+  String getTranslatedText(WidgetRef ref, String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
   }
 }
