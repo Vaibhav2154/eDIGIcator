@@ -8,7 +8,7 @@ class Compihome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // To remove the back button
+        automaticallyImplyLeading:true, // To remove the back button
         title: const Text(
           'Hello student', // Title of the AppBar
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

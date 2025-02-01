@@ -24,7 +24,9 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
     "7th Standard",
     "8th Standard",
     "9th Standard",
-    "10th Standard"
+    "10th Standard",
+    "11 Standard",
+    "12 Standard"
   ];
 
   Future<void> _pickImage() async {
