@@ -42,42 +42,41 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
     }
   }
 
-  Future<void> _registerUser() async {
-    try {
-      var uri = Uri.parse("http://localhost:8000/api/users/register");
+  Future<void> _registerUser(BuildContext context) async {
+  try {
+    var uri = Uri.parse("http://localhost:8000/api/users/register");
 
-      var request = http.MultipartRequest('POST', uri);
+    var request = http.MultipartRequest('POST', uri);
 
-      if (_profileImage != null) {
-        var profileImage = await http.MultipartFile.fromPath(
-            'profileImage', _profileImage!.path,
-            contentType: MediaType('image', 'jpeg'));
+    if (_profileImage != null) {
+      var profileImage = await http.MultipartFile.fromPath(
+          'profileImage', _profileImage!.path,
+          contentType: MediaType('image', 'jpeg'));
 
-        request.files.add(profileImage);
-      }
+      request.files.add(profileImage);
+    }
 
-      request.fields['fullName'] = nameController.text;
-      request.fields['email'] = phoneController.text; // Adjust as needed
-      request.fields['username'] = usernameController.text;
-      request.fields['password'] = passwordController.text;
-      request.fields['userClass'] = selectedClass;
+    request.fields['fullName'] = nameController.text;
+    request.fields['email'] = phoneController.text; // Adjust as needed
+    request.fields['username'] = usernameController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['userClass'] = selectedClass;
 
-      var response = await request.send();
-if (response.statusCode == 201 && mounted) {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => const OnboardingPage()),
-  );
+    var response = await request.send();
+    if (response.statusCode == 201 && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const OnboardingPage()),
+      );
+    } else {
+      // Show error
+      print('Failed to register: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
 }
 
-else {
-        // Show error
-        print('Failed to register: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +181,7 @@ else {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _registerUser,
+                onPressed: () => _registerUser(context),
                 child: const Text('Register', style: TextStyle(fontSize: 18)),
               ),
             ),
@@ -199,5 +198,5 @@ else {
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
+}
 }

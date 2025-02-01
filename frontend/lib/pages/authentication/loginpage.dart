@@ -1,7 +1,8 @@
+import 'package:edigicator/pages/OnboardingPage.dart';
 import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 import 'package:flutter/material.dart';
-//import 'package:edigicator/pages/authentication/RegisterSelectionPage.dart';
-import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
+import 'package:http/http.dart' as http;
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -15,8 +16,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try {
-      var uri = Uri.parse("http://yourbackendurl/login");
-
+      var uri = Uri.parse("mongodb+srv://sankalp:sankalp-123@edigi.hdccb.mongodb.net/?retryWrites=true&w=majority&appName=edigi");
       var response = await http.post(
         uri,
         body: {
@@ -31,7 +31,6 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => const OnboardingPage()),
         );
       } else {
-        // Handle login error
         print('Login failed: ${response.statusCode}');
       }
     } catch (e) {
@@ -61,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            // Username
             TextField(
               controller: usernameController,
               decoration: InputDecoration(
@@ -73,7 +71,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 15),
-            // Password
             TextField(
               controller: passwordController,
               obscureText: true,
@@ -86,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 30),
-            // Login Button
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -95,9 +91,31 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text('Login', style: TextStyle(fontSize: 18)),
               ),
             ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Don't have an account? "),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPageSyllabus()),
+                    );
+                  },
+                  child: Text(
+                    "Register",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
-      ),
-    );
-  }
+     ),
+);
+}
 }
