@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:edigicator/pages/OnboardingPage.dart'; // Import OnboardingPage
+import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
 
 class RegisterPageSyllabus extends StatefulWidget {
   const RegisterPageSyllabus({super.key});
@@ -39,6 +42,43 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
     }
   }
 
+  Future<void> _registerUser() async {
+    try {
+      var uri = Uri.parse("http://localhost:8000/api/users/register");
+
+      var request = http.MultipartRequest('POST', uri);
+
+      if (_profileImage != null) {
+        var profileImage = await http.MultipartFile.fromPath(
+            'profileImage', _profileImage!.path,
+            contentType: MediaType('image', 'jpeg'));
+
+        request.files.add(profileImage);
+      }
+
+      request.fields['fullName'] = nameController.text;
+      request.fields['email'] = phoneController.text; // Adjust as needed
+      request.fields['username'] = usernameController.text;
+      request.fields['password'] = passwordController.text;
+      request.fields['userClass'] = selectedClass;
+
+      var response = await request.send();
+if (response.statusCode == 201 && mounted) {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => const OnboardingPage()),
+  );
+}
+
+else {
+        // Show error
+        print('Failed to register: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +89,6 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-
             // Profile Picture Upload
             Center(
               child: GestureDetector(
@@ -65,9 +104,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             // Full Name
             TextField(
               controller: nameController,
@@ -79,9 +116,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 prefixIcon: const Icon(Icons.person),
               ),
             ),
-
             const SizedBox(height: 15),
-
             // Class Studying In (Dropdown)
             DropdownButtonFormField<String>(
               value: selectedClass,
@@ -103,9 +138,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 ),
               ),
             ),
-
             const SizedBox(height: 15),
-
             // Phone Number
             TextField(
               controller: phoneController,
@@ -118,9 +151,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 prefixIcon: const Icon(Icons.phone),
               ),
             ),
-
             const SizedBox(height: 15),
-
             // Username
             TextField(
               controller: usernameController,
@@ -132,9 +163,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 prefixIcon: const Icon(Icons.person_outline),
               ),
             ),
-
             const SizedBox(height: 15),
-
             // New Password
             TextField(
               controller: passwordController,
@@ -147,20 +176,13 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                 prefixIcon: const Icon(Icons.lock),
               ),
             ),
-
             const SizedBox(height: 30),
-
             // Register Button
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const OnboardingPage()), // Navigate to OnboardingPage
-                  );
-                },
+                onPressed: _registerUser,
                 child: const Text('Register', style: TextStyle(fontSize: 18)),
               ),
             ),
