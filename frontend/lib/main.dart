@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:edigicator/pages/loginpage.dart';
+import 'package:edigicator/pages/authentication/loginpage.dart';
 void main() {
   runApp(const App());
 }
