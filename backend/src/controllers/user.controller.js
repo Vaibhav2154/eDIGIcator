@@ -23,11 +23,11 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
   };
   const registerUser = asyncHandler(async (req, res) => {
-      const { fullName, email, username, password, userClass, mobile} = req.body;
+      const { fullName, email, username, password, userClass, user_type, mobile} = req.body;
       
       // Validate fields
       if (
-        [fullName, username, password].some((field) => field?.trim() === "")
+        [fullName, user_type, username, password].some((field) => field?.trim() === "")
       ) {
         throw new ApiError(400, "All fields are required");
       }
@@ -64,6 +64,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
         email,
         password,
         mobile,
+        user_type,
         username: username.toLowerCase(),
         class_no: userClass,
       });
@@ -109,12 +110,12 @@ const generateAccessAndRefereshTokens = async (userId) => {
     });
   
   const loginUser = asyncHandler(async (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password} = req.body;
     if (!username) {
       throw new ApiError(400, "username is required");
     }
     const user = await User.findOne({
-      $or: [{ username }, { email }],
+      $or: [{ username }],
     });
     if (!user) {
       throw new ApiError(404, "User does not exist");
