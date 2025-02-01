@@ -23,11 +23,11 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
   };
   const registerUser = asyncHandler(async (req, res) => {
-      const { fullName, email, username, password, userClass, subscribedTags } = req.body;
+      const { fullName, email, username, password, userClass, mobile} = req.body;
     
       // Validate fields
       if (
-        [fullName, email, username, password].some((field) => field?.trim() === "")
+        [fullName, username, password].some((field) => field?.trim() === "")
       ) {
         throw new ApiError(400, "All fields are required");
       }
@@ -63,9 +63,9 @@ const generateAccessAndRefereshTokens = async (userId) => {
         profileImage: profileImgUrl,
         email,
         password,
+        mobile,
         username: username.toLowerCase(),
         class_no: userClass,
-        subscribedTags: [],
       });
 
       // Fetch the created user without sensitive fields
@@ -246,6 +246,12 @@ const generateAccessAndRefereshTokens = async (userId) => {
   
   const getUserStats = asyncHandler(async (req, res) => {
     const userId = req.user._id;
+
+    const user = await User.findById(userId).select("streak maxStreak");
+  
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
   
     // Count total videos watched by the user
     const totalVideosWatched = await Video.countDocuments({ watchedBy: userId });
@@ -261,10 +267,11 @@ const generateAccessAndRefereshTokens = async (userId) => {
         totalVideosWatched,
         totalQuestionsAsked,
         totalQuestionsAnswered,
+        streak: user.streak,
+        maxStreak: user.maxStreak,
       }, "User's activity stats fetched successfully")
     );
   });
-  
   
   const getCurrentUser = asyncHandler(async (req, res) => {
     return res
@@ -335,6 +342,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
     getUserStats,
     getCurrentUser,
     updateAccountDetails,
-    updateUserDP,
+    updateUserDP, 
   };
   
