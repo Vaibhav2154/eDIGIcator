@@ -42,22 +42,9 @@ export const user_verifyJWT = asyncHandler(async (req, _, next) => {
   next();
 });
 
-// export const teacher_verifyJWT = asyncHandler(async (req, _, next) => {
-//   const token =
-//     req.cookies?.accessToken ||
-//     req.header("Authorization")?.replace("Bearer ", "");
-
-//   const parent = await verifyJWT(token, Parent, "Parent");
-//   req.parent = parent;
-//   next();
-// });
-
-// export const admin_verifyJWT = asyncHandler(async (req, _, next) => {
-//   const token =
-//     req.cookies?.accessToken ||
-//     req.header("Authorization")?.replace("Bearer ", "");
-
-//   const counsellor = await verifyJWT(token, Counsellor, "Counsellor");
-//   req.counsellor = counsellor;
-//   next();
-// });
+export const isAdmin = (req, res, next) => {
+  if (req.user.user_type !== "admin") {
+    throw new ApiError(403, "Admin access only.");
+  }
+  next();
+};

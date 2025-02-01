@@ -28,12 +28,9 @@ const userSchema = new Schema(
     profileImage: {
       type: String, // cloudinary url
     },
-    subscribedTags: [
-      {
-        type: String,
-        required: [true, "Tags are required to optimize your feed"],
-      },
-    ],
+    goal: {
+      type: String
+  },
     password: {
       type: String,
       required: [true, "Password is required"],
