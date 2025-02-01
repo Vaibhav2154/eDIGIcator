@@ -77,16 +77,15 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Align(          
-          alignment: Alignment.center,
-          child: Text(
+        title:          
+          
+           Text(
             'eDigiBot',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 40,
             ),
           ),
-        ),
+        
 
       ),
       body: Column(
