@@ -1,7 +1,7 @@
 import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 import 'package:flutter/material.dart';
-
-
+//import 'package:edigicator/pages/authentication/RegisterSelectionPage.dart';
+import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPageSyllabus()),
+                        MaterialPageRoute(builder: (context) =>const  RegisterPageSyllabus()),
                       );
                     },
                     child: const Text("Register"),

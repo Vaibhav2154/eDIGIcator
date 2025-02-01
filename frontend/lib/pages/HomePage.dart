@@ -44,7 +44,7 @@ class HomePage extends ConsumerStatefulWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: Row(
           children: [
             Padding(

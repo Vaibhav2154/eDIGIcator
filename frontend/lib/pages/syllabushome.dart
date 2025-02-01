@@ -17,10 +17,10 @@ class Syllabushome extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true, // To show the back button
-        title: Text(
-          getTranslatedText(ref, 'Hello student', 'ಹಲೋ ವಿದ್ಯಾರ್ಥಿ'), // Translated title
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        automaticallyImplyLeading:true, // To remove the back button
+        title: const Text(
+          'Hello student', // Title of the AppBar
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         actions: [
           // Language Switcher Dropdown

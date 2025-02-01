@@ -1,54 +1,60 @@
+import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:edigicator/services/language_provider.dart'; // Import the language provider
 
-class ScienceHome extends ConsumerWidget {
+class ScienceHome extends ConsumerStatefulWidget {
   const ScienceHome({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the current language from the provider
-    final String currentLanguage = ref.watch(languageProvider);
+  _ScienceHomeState createState() => _ScienceHomeState();
+}
 
+class _ScienceHomeState extends ConsumerState<ScienceHome> {
+  int _selectedIndex = 0; // To keep track of the selected tab
+
+  // List of pages corresponding to the tabs
+  final List<Widget> _pages = [
+    const Center(child: Text('Resources')), // Placeholder for Resources page
+    const Center(child: Text('3D Resources')), // Placeholder for 3D Resources page
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index; // Update selected tab index
+    });
+
+    // If the 'Home' tab is tapped, navigate back to the HomePage
+    if (index == 0) {
+      Navigator.pop(context); // This will pop the current page and navigate back
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           getTranslatedText(ref, 'Science Syllabus', 'ವಿಜ್ಞಾನ ಸಿಲಬಸ್'),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Welcome Text (Translated)
-            Text(
-              getTranslatedText(
-                ref,
-                'Welcome to the Science Syllabus Section!',
-                'ವಿಜ್ಞಾನ ಸಿಲಬಸ್ ವಿಭಾಗಕ್ಕೆ ಸ್ವಾಗತ!',
-              ),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            // Add more content here if needed
-            Expanded(
-              child: Center(
-                child: Text(
-                  getTranslatedText(
-                    ref,
-                    'This section contains the syllabus for Science.',
-                    'ಈ ವಿಭಾಗದಲ್ಲಿ ವಿಜ್ಞಾನ ಸಿಲಬಸ್ ಇರುತ್ತದೆ.',
-                  ),
-                  style: const TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: _pages[_selectedIndex], // Render the selected page
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex, // Highlight the selected tab
+        onTap: _onItemTapped, // Handle tab change
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home), // Icon for Home
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books), // Icon for Resources
+            label: 'Resources',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.spatial_audio), // Alternative icon for 3D Resources
+            label: '3D Resources',
+          ),
+        ],
       ),
     );
   }
