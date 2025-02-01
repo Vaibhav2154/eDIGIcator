@@ -1,36 +1,34 @@
 import 'dart:convert';
-import 'package:edigicator/services/language_provide.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/translation_service.dart';
 import 'package:http/http.dart' as http;
-
-import 'dart:convert';
+import 'package:edigicator/services/language_provider.dart';
 import 'package:edigicator/pages/latestnewspage.dart';
-import 'package:edigicator/pages/chat_page.dart'; // Import Chatbot Page
-import 'package:edigicator/pages/compihome.dart'; // Import Compihome Page
-//import 'package:edigicator/pages/syllabushome.dart'; // Import Syllabushome Page
+import 'package:edigicator/pages/chat_page.dart';
+import 'package:edigicator/pages/compihome.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
-  Future<String> fetchQuote(WidgetRef ref) async {
-    final String currentLanguage = ref.watch(languageProvider);
   @override
-  State<HomePage> createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 1; // Default selected tab (Home)
+class _HomePageState extends ConsumerState<HomePage> {
+  int _selectedIndex = 1;
 
   Future<String> fetchQuote() async {
     final response = await http.get(Uri.parse('https://zenquotes.io/api/random'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       final String quote = data[0]['q'];
+
+      // Get current language
+      final String currentLanguage = ref.watch(languageProvider);
+
       // Translate the quote to the current language
       return TranslationService.translateText(quote, currentLanguage);
-      return data[0]['q'];
     } else {
       throw Exception('Failed to load quote');
     }
@@ -42,25 +40,22 @@ class _HomePageState extends State<HomePage> {
     });
 
     switch (index) {
-      case 0:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+      case 2:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
         break;
       case 1:
-        break;
-      case 2:
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ChatScreen()));
-        break;
-      case 3:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const QnaPage()));
-        break;
-      case 4:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage()));
         break;
     }
   }
 
+  // Function to translate text dynamically
+  String getTranslatedText(String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final String currentLanguage = ref.watch(languageProvider);
 
     return Scaffold(
@@ -68,11 +63,11 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
               child: Text(
-                'Edigicator',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                getTranslatedText('Edigicator', 'ಎಡಿಗಿಕೇಟರ್'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             const Spacer(),
@@ -108,12 +103,12 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<String>(
-              future: fetchQuote(ref),
+              future: fetchQuote(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(child: Text(getTranslatedText('Error: ${snapshot.error}', 'ದೋಷ: ${snapshot.error}')));
                 } else if (snapshot.hasData) {
                   return Text(
                     snapshot.data!,
@@ -121,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                     textAlign: TextAlign.center,
                   );
                 } else {
-                  return const Center(child: Text('No quote available'));
+                  return Center(child: Text(getTranslatedText('No quote available', 'ಯಾವುದೇ ಉಲ್ಲೇಖ ಲಭ್ಯವಿಲ್ಲ')));
                 }
               },
             ),
@@ -134,12 +129,11 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                title: const Text(
-                  'Latest News',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                title: Text(
+                  getTranslatedText('Latest News', 'ಇತ್ತೀಚಿನ ಸುದ್ದಿ'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                subtitle: const Text('Tap here to view the latest news.'),
-                onTap: () {},
+                subtitle: Text(getTranslatedText('Tap here to view the latest news.', 'ಇತ್ತೀಚಿನ ಸುದ್ದಿಯನ್ನು ವೀಕ್ಷಿಸಲು ಇಲ್ಲಿ ಒತ್ತಿರಿ.')),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -149,35 +143,31 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                // Competitive Exam Card (Tappable)
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Compihome()), // Navigate to Compihome
+                        MaterialPageRoute(builder: (context) => const Compihome()),
                       );
                     },
-                    child: _buildImageCard('assets/competitve.jpg', 'Competitive'),
+                    child: _buildImageCard('assets/competitve.jpg', getTranslatedText('Competitive', 'ಸ್ಪರ್ಧಾತ್ಮಕ')),
                   ),
                 ),
-                const SizedBox(width: 12), // Space between images
-
-                // Syllabus Card (Tappable)
+                const SizedBox(width: 12),
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                    //  Navigator.push(
-                     //   context,
-                     //   MaterialPageRoute(builder: (context) => const Syllabushome()), // Navigate to Syllabushome
-                     // );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const Syllabushome()),
+                      // );
                     },
-                    child: _buildImageCard('assets/syllabus.jpg', 'Syllabus'),
+                    child: _buildImageCard('assets/syllabus.jpg', getTranslatedText('Syllabus', 'ಅಭ್ಯಾಸಕ್ರಮ')),
                   ),
                 ),
               ],
@@ -185,20 +175,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-
-      // Bottom Navigation Bar with Chatbot in the Center
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         onTap: _navigateToPage,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chatbot'),
-          BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Q & A'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+        items: [
+          BottomNavigationBarItem(icon: const Icon(Icons.person), label: getTranslatedText('Profile', 'ಪ್ರೊಫೈಲ್')),
+          BottomNavigationBarItem(icon: const Icon(Icons.home), label: getTranslatedText('Home', 'ಮುಖಪುಟ')),
+          BottomNavigationBarItem(icon: const Icon(Icons.chat), label: getTranslatedText('Chatbot', 'ಚಾಟ್‌ಬಾಟ್')),
+          BottomNavigationBarItem(icon: const Icon(Icons.question_answer), label: getTranslatedText('Q & A', 'ಪ್ರಶ್ನೋತ್ತರ')),
+          BottomNavigationBarItem(icon: const Icon(Icons.search), label: getTranslatedText('Search', 'ಹುಡುಕಿ')),
         ],
       ),
     );
@@ -226,18 +214,6 @@ class _HomePageState extends State<HomePage> {
               height: 160,
               width: double.infinity,
               fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                colors: [Colors.black.withOpacity(0.5), Colors.transparent],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
             ),
           ),
         ),
