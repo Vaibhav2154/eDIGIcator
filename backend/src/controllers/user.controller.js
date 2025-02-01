@@ -24,7 +24,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
   };
   const registerUser = asyncHandler(async (req, res) => {
       const { fullName, email, username, password, userClass, mobile} = req.body;
-    
+      
       // Validate fields
       if (
         [fullName, username, password].some((field) => field?.trim() === "")
@@ -85,6 +85,28 @@ const generateAccessAndRefereshTokens = async (userId) => {
         );
     });
     
+    const updateUserSchedule = asyncHandler(async (req, res) => {
+      const { bedTime, studyTime, schoolTime, studyGoal } = req.body;
+      const userId = req.user._id;
+    
+      // Find user
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new ApiError(404, "User not found.");
+      }
+    
+      // Update user fields if provided
+      if (bedTime) user.bedTime = new Date(bedTime);
+      if (studyTime) user.studyTime = new Date(studyTime);
+      if (schoolTime?.start) user.schoolTime.start = new Date(schoolTime.start);
+      if (schoolTime?.end) user.schoolTime.end = new Date(schoolTime.end);
+      if (studyGoal) user.studyGoal = studyGoal; // Example: "Complete 2 chapters per day"
+    
+      // Save updated user
+      await user.save();
+    
+      res.status(200).json(new ApiResponse(200, user, "User schedule updated successfully."));
+    });
   
   const loginUser = asyncHandler(async (req, res) => {
     const { username, password, email } = req.body;
@@ -343,5 +365,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
     getCurrentUser,
     updateAccountDetails,
     updateUserDP, 
+    updateUserSchedule
   };
   
