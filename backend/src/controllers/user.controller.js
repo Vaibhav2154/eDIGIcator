@@ -23,7 +23,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
   };
   const registerUser = asyncHandler(async (req, res) => {
-      const { fullName, email, username, password, userClass, user_type, mobile} = req.body;
+      const { fullName, username, password, userClass, user_type, mobile,} = req.body;
       
       // Validate fields
       if (
@@ -34,7 +34,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     
       // Check if user already exists
       const existedUser = await User.findOne({
-        $or: [{ username }, { email }],
+        $or: [{ username }],
       });
     
       if (existedUser) {
@@ -61,7 +61,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
       const user = await User.create({
         fullName,
         profileImage: profileImgUrl,
-        email,
         password,
         mobile,
         user_type,
