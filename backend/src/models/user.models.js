@@ -48,8 +48,9 @@ const userSchema = new Schema(
     },
     class_no: Number,
     user_type: {
-      String,
-      required: true
+      type: String,
+      required: true,
+      enum: ["user", "teacher", "admin"],
     },
     lastLoginDate: {
       type: Date,
@@ -61,7 +62,21 @@ const userSchema = new Schema(
     maxStreak: {
       type: Number,
       default: 0,
-    },    
+    },
+    bedTime: {
+      type: Date,
+    },
+    studyTime: {
+      type: Date,
+    },
+    schoolTime: {
+      start: {
+        type: Date,
+      },
+      end: {
+        type: Date,
+      },
+    },  
     refreshToken: String,
   },
   {

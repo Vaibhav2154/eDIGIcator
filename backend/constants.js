@@ -1,1 +1,1 @@
-export const DB_NAME= 'eDIGI'
+export const DB_NAME= 'edigi'
