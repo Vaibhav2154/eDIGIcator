@@ -1,6 +1,6 @@
 import express from "express";
 import { askChatbot } from "../controllers/chatbot.controller.js";
-import { verifyUser } from "../middlewares/auth.middleware.js"; // Middleware for authentication
+//import { verifyUser } from "../middleware/auth.middleware.js"; // Middleware for authentication
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = express.Router();

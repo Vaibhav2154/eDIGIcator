@@ -8,7 +8,8 @@ import userRouter from './routes/user.routes.js';
 import questionRouter from './routes/question.routes.js';
 import answerRouter from './routes/answer.routes.js';
 // import replyRouter from './routes/reply.route.js';
-import chatRouter from '.routes/chatbot.routes.js'
+import teacherRouter from "./routes/teacher.routes.js"
+import chatRouter from './routes/chatbot.routes.js'
 import dotenv from 'dotenv';
 dotenv.config();
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/users', userRouter);
 app.use('/api/questions', questionRouter);
 app.use('/api/answers', answerRouter);
 app.use('/api/chatbot',chatRouter)
+app.use('/api/teacher',teacherRouter)
 // app.use('/api/reply', replyRouter);
 
 export default app

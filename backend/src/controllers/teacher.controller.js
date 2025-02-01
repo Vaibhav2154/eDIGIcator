@@ -1,9 +1,9 @@
 import asyncHandler from "../utils/asynchandler.utils.js";
-import ApiError from "../utils/API_Error.js";
-import ApiResponse from "../utils/API_Response.js";
-import { User } from "../models/user.model.js"; // Teacher model
+import {ApiError} from "../utils/API_Error.js";
+import {ApiResponse} from "../utils/API_Response.js";
+import { User } from "../models/user.models.js"; // Teacher model
 import { Video } from "../models/Video.model.js"; // Video model
-import { Question } from "../models/question.model.js"; // Question model
+import  Question  from "../models/question.models.js"; // Question model
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Cloudinary Upload Utility
 
 // Allow a teacher to register and select up to 2 subjects

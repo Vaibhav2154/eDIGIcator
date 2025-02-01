@@ -1,5 +1,5 @@
 import express from "express";
-import { registerTeacher, addVideo, approveVideo, answerQuestion } from "../controllers/teacherController.js";
+import { registerTeacher, addVideo, approveVideo, answerQuestion } from "../controllers/teacher.controller.js";
 import { isAdmin } from "../middleware/auth.middleware.js";
 import multer from "multer";
 import { verifyJWT } from "../middleware/auth.middleware.js";

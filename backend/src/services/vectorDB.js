@@ -1,29 +1,21 @@
-// services/textbook.service.js
-import { Configuration, OpenAIApi } from 'openai';
-import { PDFDocument } from 'pdf-lib';
+// Correct method usage for OpenAI v4
+import OpenAI from 'openai';
 import axios from 'axios';
 
-// Initialize OpenAI
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY
+// Initialize OpenAI client
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    basePath: 'https://api.openai.com/v1' // Ensure the correct base path is used
 });
-const openai = new OpenAIApi(configuration);
 
-// Extract text from PDF
+// Function to extract text from PDF
 async function extractTextFromPDF(pdfUrl) {
     try {
-        const response = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
-        const pdfDoc = await PDFDocument.load(response.data);
-        
-        let fullText = '';
-        for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-            const page = pdfDoc.getPage(i);
-            const text = await page.getText();
-            fullText += text + '\n';
-        }
-        return fullText;
+        console.log(`Sending request to Python service for PDF extraction: ${pdfUrl}`);
+        const response = await axios.post('http://localhost:5001/extract-text', { pdfUrl });
+        return response.data.text;
     } catch (error) {
-        console.error('Error extracting text from PDF:', error);
+        console.error('Error extracting text from PDF:', error.response?.data || error.message);
         throw new Error('Failed to extract text from PDF');
     }
 }
@@ -59,20 +51,19 @@ function cosineSimilarity(vecA, vecB) {
 // Main service functions
 export async function extractAndProcessText(textbookUrl, question) {
     try {
-        // Extract and chunk text
         const textContent = await extractTextFromPDF(textbookUrl);
         const chunks = chunkText(textContent);
 
-        // Create embeddings for question
-        const questionEmbedding = await openai.createEmbedding({
-            model: "text-embedding-ada-002",
+        // Request embeddings for the question
+        const questionEmbedding = await openai.embeddings.create({
+            model: 'text-embedding-ada-002',
             input: question
         });
 
-        // Create embeddings for chunks
+        // Request embeddings for the chunks
         const chunkEmbeddings = await Promise.all(chunks.map(async (chunk) => {
-            const response = await openai.createEmbedding({
-                model: "text-embedding-ada-002",
+            const response = await openai.embeddings.create({
+                model: 'text-embedding-ada-002',
                 input: chunk
             });
             return {
@@ -81,7 +72,7 @@ export async function extractAndProcessText(textbookUrl, question) {
             };
         }));
 
-        // Find most relevant chunks
+        // Find most relevant chunks based on cosine similarity
         const questionVector = questionEmbedding.data.data[0].embedding;
         const relevantChunks = chunkEmbeddings
             .map(({ chunk, embedding }) => ({
@@ -98,9 +89,10 @@ export async function extractAndProcessText(textbookUrl, question) {
     }
 }
 
+// Function to generate an answer using GPT-4
 export async function generateAnswer(question, relevantChunks, preferredLanguage) {
     try {
-        const completion = await openai.createChatCompletion({
+        const completion = await openai.chat.completions.create({
             model: 'gpt-4',
             messages: [
                 {
@@ -116,7 +108,7 @@ export async function generateAnswer(question, relevantChunks, preferredLanguage
             temperature: 0.7
         });
 
-        return completion.data.choices[0].message;
+        return completion.choices[0].message.content;  // Correct way to extract the message
     } catch (error) {
         throw new Error('Failed to generate answer: ' + error.message);
     }
