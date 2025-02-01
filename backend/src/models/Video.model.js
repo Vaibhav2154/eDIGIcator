@@ -10,4 +10,4 @@ const VideoSchema = new mongoose.Schema({
   watchedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] // Array of User references
 });
 
-export default mongoose.model("Video", VideoSchema);
+export const Video = mongoose.model("Video", VideoSchema);

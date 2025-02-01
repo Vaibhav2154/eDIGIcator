@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import asyncHandler from "../utils/asynchandler.utils.js";
 import {ApiError} from "../utils/API_Error.js";
 import { User } from "../models/user.models.js";
+import { Video } from "../models/Video.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/API_Response.js";
 import jwt from "jsonwebtoken";
@@ -23,7 +24,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
   };
   const registerUser = asyncHandler(async (req, res) => {
-      const { fullName, email, username, password, userClass, user_type, mobile} = req.body;
+      const { fullName, username, password, userClass, user_type, mobile} = req.body;
       
       // Validate fields
       if (
@@ -34,11 +35,11 @@ const generateAccessAndRefereshTokens = async (userId) => {
     
       // Check if user already exists
       const existedUser = await User.findOne({
-        $or: [{ username }, { email }],
+        $or: [{ username }],
       });
     
       if (existedUser) {
-        throw new ApiError(409, "User with email or username already exists");
+        throw new ApiError(409, "User with username already exists");
       }
       const defaultProfileImageUrl =
         "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg";
@@ -61,7 +62,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
       const user = await User.create({
         fullName,
         profileImage: profileImgUrl,
-        email,
         password,
         mobile,
         user_type,
@@ -296,16 +296,16 @@ const generateAccessAndRefereshTokens = async (userId) => {
     const totalVideosWatched = await Video.countDocuments({ watchedBy: userId });
   
     // Count total questions asked by the user
-    const totalQuestionsAsked = await Question.countDocuments({ owner: userId });
+    //const totalQuestionsAsked = await Question.countDocuments({ owner: userId });
   
     // Count total questions answered by the user
-    const totalQuestionsAnswered = await Question.countDocuments({ "answers.owner": userId });
+   // const totalQuestionsAnswered = await Question.countDocuments({ "answers.owner": userId });
   
     res.status(200).json(
       new ApiResponse(200, {
         totalVideosWatched,
-        totalQuestionsAsked,
-        totalQuestionsAnswered,
+        // totalQuestionsAsked,
+        // totalQuestionsAnswered,
         streak: user.streak,
         maxStreak: user.maxStreak,
       }, "User's activity stats fetched successfully")
@@ -319,9 +319,9 @@ const generateAccessAndRefereshTokens = async (userId) => {
   });
   
   const updateAccountDetails = asyncHandler(async (req, res) => {
-    const { fullName, email } = req.body;
+    const { fullName } = req.body;
   
-    if (!fullName || !email) {
+    if (!fullName) {
       throw new ApiError(400, "All fields are required");
     }
   
@@ -330,8 +330,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
       {
         $set: {
           fullName,
-          email: email,
-        },
+              },
       },
       { new: true },
     ).select("-password");

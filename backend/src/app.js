@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import videoRouter from './routes/Video.routes.js';
+import textRouter from './routes/TextBook.route.js';
+import pypRouter from './routes/PreviousPaper.routes.js';
 import userRouter from './routes/user.routes.js';
 // import questionRouter from './routes/question.route.js';
 // import answerRouter from './routes/answer.route.js';
@@ -27,6 +29,9 @@ app.use(cookieParser());
 
 
 app.use('/api/videos',videoRouter)
+app.use('/api/textbook',textRouter)
+app.use('/api/videos',videoRouter)
+app.use('/api/pyp',pypRouter)
 app.use('/api/users', userRouter);
 // app.use('/api/questions', questionRouter);
 // app.use('/api/answers', answerRouter);

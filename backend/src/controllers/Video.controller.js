@@ -1,4 +1,4 @@
-import Video from "../models/Video.model.js";
+import {Video} from "../models/Video.model.js";
 export const insertDefaultVideos = async () => {
     try {
         const videos = [

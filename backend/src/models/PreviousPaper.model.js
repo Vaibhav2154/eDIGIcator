@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const PreviousPaperSchema = new mongoose.Schema({
-  subject: { type: mongoose.Schema.Types.ObjectId, ref: "Subject", required: true },
+  subject: { type: String, required: true },
   class: { type: Number, required: true },
   pdfUrl: { type: String, required: true } // Link to the previous year paper PDF
 });
