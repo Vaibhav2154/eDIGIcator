@@ -198,5 +198,5 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
+}
 }
