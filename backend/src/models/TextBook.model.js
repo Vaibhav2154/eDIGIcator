@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from mongoose
 
 const TextbookSchema = new mongoose.Schema({
   subject: { type: String, required: true },

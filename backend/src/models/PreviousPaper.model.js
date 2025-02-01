@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const PreviousPaperSchema = new mongoose.Schema({
   subject: { type: mongoose.Schema.Types.ObjectId, ref: "Subject", required: true },
@@ -6,4 +6,4 @@ const PreviousPaperSchema = new mongoose.Schema({
   pdfUrl: { type: String, required: true } // Link to the previous year paper PDF
 });
 
-module.exports = mongoose.model("PreviousPaper", PreviousPaperSchema);
+export default mongoose.model('PreviousPaper', PreviousPaperSchema);
