@@ -103,7 +103,26 @@ const generateAccessAndRefereshTokens = async (userId) => {
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid user credentials");
     }
+    // Streak logic
+    const now = new Date();
+    const lastLogin = user.lastLoginDate;
+    const diffInHours = lastLogin ? (now - lastLogin) / (1000 * 60 * 60) : null;
   
+    if (diffInHours !== null && diffInHours >= 24 && diffInHours < 48) {
+      user.streak += 1; // Continue streak
+    } else if (diffInHours !== null && diffInHours >= 48) {
+      user.streak = 1; // Reset streak
+    } else if (!lastLogin) {
+      user.streak = 1; // First login
+    }
+  
+    if (user.streak > user.maxStreak) {
+      user.maxStreak = user.streak; // Update max streak
+    }
+  
+    user.lastLoginDate = now;
+    await user.save();
+
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
       user._id,
     );
@@ -306,4 +325,16 @@ const generateAccessAndRefereshTokens = async (userId) => {
       .json(new ApiResponse(200, user, "Profile image updated successfully"));
   });
   
- 
+  export {
+    generateAccessAndRefereshTokens,
+    registerUser,
+    loginUser,
+    logoutUser,
+    refreshAccessToken,
+    changeCurrentPassword,
+    getUserStats,
+    getCurrentUser,
+    updateAccountDetails,
+    updateUserDP,
+  };
+  
