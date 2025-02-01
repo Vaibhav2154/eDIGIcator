@@ -8,7 +8,8 @@ import 'package:edigicator/services/language_provider.dart'; // Ensure this path
 import 'package:edigicator/services/translation_service.dart'; // Ensure this path is correct
 
 class ChatScreen extends ConsumerStatefulWidget {
-  @override
+
+   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
