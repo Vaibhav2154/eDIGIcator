@@ -87,15 +87,15 @@ const generateAccessAndRefereshTokens = async (userId) => {
     });
     
     const updateUserSchedule = asyncHandler(async (req, res) => {
-      const { bedTime, studyTime, schoolTime, studyGoal, userId } = req.body;
+      const { bedTime, studyTime, schoolTime, studyGoal, username } = req.body;
     
       // Check if userId is provided
-      if (!userId) {
-        throw new ApiError(400, 'User ID is required');
+      if (!username) {
+        throw new ApiError(400, 'Username is required');
       }
     
       // Find user
-      const user = await User.findById(userId);
+      const user = await User.findOne({username: username});
       if (!user) {
         throw new ApiError(404, "User not found.");
       }
