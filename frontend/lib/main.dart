@@ -1,6 +1,8 @@
+import 'package:edigicator/pages/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:edigicator/pages/loginpage.dart';
+
+
 void main() {
   runApp(const App());
 }
@@ -20,8 +22,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: theme,
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }
