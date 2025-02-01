@@ -1,6 +1,8 @@
+import 'package:edigicator/pages/HomePage.dart';
+import 'package:edigicator/pages/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:edigicator/pages/authentication/loginpage.dart';
+
 void main() {
   runApp(const App());
 }
@@ -22,7 +24,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: theme,
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }
