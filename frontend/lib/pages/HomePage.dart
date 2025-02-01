@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:edigicator/services/translation_service.dart';
-import 'package:edigicator/services/language_provide.dart';
+import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +27,10 @@ class HomePage extends ConsumerStatefulWidget {
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       final String quote = data[0]['q'];
+
+      // Get current language
+      final String currentLanguage = ref.watch(languageProvider);
+
       // Translate the quote to the current language
       return await TranslationService.translateText(quote, currentLanguage);
     } else {
@@ -40,14 +44,14 @@ class HomePage extends ConsumerStatefulWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
               child: Text(
-                'Edigicator',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                getTranslatedText('Edigicator', 'ಎಡಿಗಿಕೇಟರ್'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             const Spacer(),
@@ -88,7 +92,7 @@ class HomePage extends ConsumerStatefulWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(child: Text(getTranslatedText('Error: ${snapshot.error}', 'ದೋಷ: ${snapshot.error}')));
                 } else if (snapshot.hasData) {
                   return Text(
                     snapshot.data!,
@@ -96,7 +100,7 @@ class HomePage extends ConsumerStatefulWidget {
                     textAlign: TextAlign.center,
                   );
                 } else {
-                  return const Center(child: Text('No quote available'));
+                  return Center(child: Text(getTranslatedText('No quote available', 'ಯಾವುದೇ ಉಲ್ಲೇಖ ಲಭ್ಯವಿಲ್ಲ')));
                 }
               },
             ),
@@ -109,9 +113,9 @@ class HomePage extends ConsumerStatefulWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                title: const Text(
-                  'Latest News',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                title: Text(
+                  getTranslatedText('Latest News', 'ಇತ್ತೀಚಿನ ಸುದ್ದಿ'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 subtitle: const Text('Tap here to view the latest news.'),
                 onTap: () {
@@ -123,12 +127,10 @@ class HomePage extends ConsumerStatefulWidget {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                // Competitive Exam Card (Tappable)
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
@@ -137,12 +139,10 @@ class HomePage extends ConsumerStatefulWidget {
                         MaterialPageRoute(builder: (context) =>  compi.Compihome(),), // Navigate to Compihome
                       );
                     },
-                    child: _buildImageCard('assets/competitve.jpg', 'Competitive'),
+                    child: _buildImageCard('assets/competitve.jpg', getTranslatedText('Competitive', 'ಸ್ಪರ್ಧಾತ್ಮಕ')),
                   ),
                 ),
-                const SizedBox(width: 12), // Space between images
-
-                // Syllabus Card (Tappable)
+                const SizedBox(width: 12),
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
@@ -151,7 +151,7 @@ class HomePage extends ConsumerStatefulWidget {
                         MaterialPageRoute(builder: (context) =>  Syllabushome()), // Navigate to SyllabusHome
                       );
                     },
-                    child: _buildImageCard('assets/syllabus.jpg', 'Syllabus'),
+                    child: _buildImageCard('assets/syllabus.jpg', getTranslatedText('Syllabus', 'ಅಭ್ಯಾಸಕ್ರಮ')),
                   ),
                 ),
               ],
@@ -159,20 +159,18 @@ class HomePage extends ConsumerStatefulWidget {
           ),
         ],
       ),
-
-      // Bottom Navigation Bar with Chatbot in the Center
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         onTap: _navigateToPage,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chatbot'),
-          BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Q & A'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+        items: [
+          BottomNavigationBarItem(icon: const Icon(Icons.person), label: getTranslatedText('Profile', 'ಪ್ರೊಫೈಲ್')),
+          BottomNavigationBarItem(icon: const Icon(Icons.home), label: getTranslatedText('Home', 'ಮುಖಪುಟ')),
+          BottomNavigationBarItem(icon: const Icon(Icons.chat), label: getTranslatedText('Chatbot', 'ಚಾಟ್‌ಬಾಟ್')),
+          BottomNavigationBarItem(icon: const Icon(Icons.question_answer), label: getTranslatedText('Q & A', 'ಪ್ರಶ್ನೋತ್ತರ')),
+          BottomNavigationBarItem(icon: const Icon(Icons.search), label: getTranslatedText('Search', 'ಹುಡುಕಿ')),
         ],
       ),
     );
@@ -200,18 +198,6 @@ class HomePage extends ConsumerStatefulWidget {
               height: 160,
               width: double.infinity,
               fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                colors: [Colors.black.withOpacity(0.5), Colors.transparent],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
             ),
           ),
         ),
@@ -252,5 +238,10 @@ class HomePage extends ConsumerStatefulWidget {
         // Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage()));
         break;
     }
+}
+  String getTranslatedText(String enText, String knText) {
+    final String currentLanguage = ref.watch(languageProvider);
+    return currentLanguage == "kn" ? knText : enText;
   }
+  
 }
