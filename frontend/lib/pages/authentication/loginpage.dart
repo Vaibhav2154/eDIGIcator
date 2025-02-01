@@ -1,8 +1,8 @@
-import 'package:edigicator/pages/OnboardingPage.dart';
-import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 import 'package:flutter/material.dart';
+import 'package:edigicator/pages/OnboardingPage.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:convert';
+import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -16,25 +16,36 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try {
-      var uri = Uri.parse("mongodb+srv://sankalp:sankalp-123@edigi.hdccb.mongodb.net/?retryWrites=true&w=majority&appName=edigi");
+      var uri = Uri.parse("http://localhost:8000/api/users/login"); // API endpoint
+
       var response = await http.post(
         uri,
-        body: {
+        body: json.encode({
           'username': usernameController.text,
           'password': passwordController.text,
-        },
+        }),
+        headers: {"Content-Type": "application/json"},
       );
 
       if (response.statusCode == 200) {
+        // On success, navigate to OnboardingPage
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const OnboardingPage()),
         );
       } else {
         print('Login failed: ${response.statusCode}');
+        // Display error message (can be improved with a UI)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${response.body}')),
+        );
       }
     } catch (e) {
       print('Error: $e');
+      // Display error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -98,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                 const Text("Don't have an account? "),
                 GestureDetector(
                   onTap: () {
+                    // Navigate to register page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RegisterPageSyllabus()),
@@ -115,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-     ),
-);
-}
+      ),
+    );
+  }
 }
