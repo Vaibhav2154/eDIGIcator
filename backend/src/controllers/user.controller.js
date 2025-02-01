@@ -266,7 +266,23 @@ const generateAccessAndRefereshTokens = async (userId) => {
       .status(200)
       .json(new ApiResponse(200, {}, "Password changed successfully"));
   });
+  const markVideoAsWatched = asyncHandler(async (req, res) => {
+    const { videoId } = req.body;
+    const userId = req.user._id;
   
+    const video = await video.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
+    }
+  
+    // Ensure user is not added multiple times
+    if (!video.watchedBy.includes(userId)) {
+      video.watchedBy.push(userId);
+      await video.save();
+    }
+  
+    res.status(200).json(new ApiResponse(200, video, "Video marked as watched"));
+  });
   const getUserStats = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -360,12 +376,13 @@ const generateAccessAndRefereshTokens = async (userId) => {
     registerUser,
     loginUser,
     logoutUser,
+    markVideoAsWatched,
     refreshAccessToken,
     changeCurrentPassword,
     getUserStats,
     getCurrentUser,
     updateAccountDetails,
     updateUserDP, 
-    updateUserSchedule
+    updateUserSchedule,
   };
   

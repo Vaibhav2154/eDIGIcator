@@ -31,8 +31,8 @@ export const insertDefaultTextbooks = async () => {
                 { class: 10, subject: "SocialScience", title: "Economics", textbookUrl: "https://drive.google.com/file/d/1jsBTHW14Gfvv-_8Bd9TAwChcc2FVIMr1/view?usp=drive_link" },
 
                 // 12th Standard - Chemistry
-                { class: 12, subject: "Chemistry", title: "Organic Chemistry", textbookUrl: "https://example.com/chemistry12_1.pdf" },
-                { class: 12, subject: "Chemistry", title: "Physical Chemistry", textbookUrl: "https://example.com/chemistry12_2.pdf" },
+                { class: 12, subject: "Physics", title: "Hc VERMA 1", textbookUrl: "https://drive.google.com/file/d/13MJoxZyZMhPB6eU5WzSR-S0lYXvf5xZq/view?usp=drive_link" },
+                { class: 12, subject: "Physics", title: "hC VERMA 2", textbookUrl: "https://drive.google.com/file/d/13MJoxZyZMhPB6eU5WzSR-S0lYXvf5xZq/view?usp=drive_link" },
 
                 // 12th Standard - Biology
                 { class: 12, subject: "Biology", title: "Human Anatomy", textbookUrl: "https://example.com/biology12_1.pdf" },
