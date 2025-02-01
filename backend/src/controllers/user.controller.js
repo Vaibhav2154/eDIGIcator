@@ -87,7 +87,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     });
     
     const updateUserSchedule = asyncHandler(async (req, res) => {
-      const { bedTime, studyTime, schoolTime, studyGoal, username } = req.body;
+      const { bedTime, studyTime, schoolTime, goal, username } = req.body;
     
       // Check if userId is provided
       if (!username) {
@@ -105,7 +105,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
       if (studyTime) user.studyTime = new Date(studyTime);
       if (schoolTime?.start) user.schoolTime.start = new Date(schoolTime.start);
       if (schoolTime?.end) user.schoolTime.end = new Date(schoolTime.end);
-      if (studyGoal) user.studyGoal = studyGoal; // Example: "Complete 2 chapters per day"
+      if (goal) user.goal = goal; // Example: "Complete 2 chapters per day"
     
       // Save updated user
       await user.save();
