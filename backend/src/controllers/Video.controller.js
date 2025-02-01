@@ -71,7 +71,7 @@ export const insertDefaultVideos = async () => {
 // ✅ 2️⃣ Fetch Videos by Class & Subject (For Users)
 export const getVideosByClassAndSubject = async (req, res) => {
     try {
-        const { classNumber, subject } = req.query;
+        const { classNumber, subject } = req.params;
         const videos = await Video.find({ class: classNumber, subject: subject }).sort({ module: 1 });
 
         if (videos.length === 0) {

@@ -3,6 +3,6 @@ import { getVideosByClassAndSubject } from '../controllers/Video.controller.js';
 
 const router = express.Router();
 
-router.get('/videos', getVideosByClassAndSubject);
+router.get('/videos/:classNumber/:subject', getVideosByClassAndSubject);
 
 export default router;
