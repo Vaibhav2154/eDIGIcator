@@ -3,14 +3,14 @@ import {ApiError} from "../utils/API_Error.js";
 import {ApiResponse} from "../utils/API_Response.js";
 import { User } from "../models/user.models.js"; // Teacher model
 import { Video } from "../models/Video.model.js"; // Video model
-import  Question  from "../models/question.models.js"; // Question model
+import Question from "../models/question.models.js"; // Question model
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Cloudinary Upload Utility
 
 // Allow a teacher to register and select up to 2 subjects
 const registerTeacher = asyncHandler(async (req, res) => {
-  const { fullName, email, password, mobile, subjects } = req.body;
+  const { fullName, username, password, mobile, subjects } = req.body;
 
-  if (!fullName || !email || !password || !mobile || !subjects) {
+  if (!fullName || !username|| !password || !mobile) {
     throw new ApiError(400, "All fields are required.");
   }
 
@@ -19,18 +19,18 @@ const registerTeacher = asyncHandler(async (req, res) => {
   }
 
   // Check if user already exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ username });
   if (existingUser) {
-    throw new ApiError(409, "User with this email already exists.");
+    throw new ApiError(409, "User with this username already exists.");
   }
 
   // Create teacher account
   const teacher = await User.create({
     fullName,
-    email,
     password,
     mobile,
-    user_type: "teacher",
+    username,
+    user_type: "Teacher",
     subjects,
   });
 
