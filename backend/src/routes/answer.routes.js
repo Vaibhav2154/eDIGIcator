@@ -4,25 +4,17 @@ import {
   deleteAnswer,
   getQuestionAnswers,
   getCurrentAnswer,
-  upvoteAnswer,
 } from "../controllers/answer.controller.js";
-import { verifyUser } from "../middlewares/auth.middleware.js"; // Middleware for authentication
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// ✅ 1️⃣ Add an Answer (Requires Authentication)
-router.post("/", verifyUser, addAnswer);
+router.post("/", verifyJWT, addAnswer);
 
-// ✅ 2️⃣ Delete an Answer (Requires Authentication)
-router.delete("/:questionId/:id", verifyUser, deleteAnswer);
+router.delete("/:questionId/:id", verifyJWT, deleteAnswer);
 
-// ✅ 3️⃣ Get All Answers for a Question
 router.get("/:questionId", getQuestionAnswers);
 
 // ✅ 4️⃣ Get a Single Answer by ID
 router.get("/single/:answerId", getCurrentAnswer);
-
-// ✅ 5️⃣ Upvote an Answer
-router.patch("/:answerId/upvote", verifyUser, upvoteAnswer);
-
 export default router;

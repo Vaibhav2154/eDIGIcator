@@ -6,7 +6,7 @@ import textRouter from './routes/TextBook.route.js';
 import pypRouter from './routes/PreviousPaper.routes.js';
 import userRouter from './routes/user.routes.js';
 import questionRouter from './routes/question.routes.js';
-// import answerRouter from './routes/answer.route.js';
+import answerRouter from './routes/answer.routes.js';
 // import replyRouter from './routes/reply.route.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -33,7 +33,7 @@ app.use('/api/videos',videoRouter)
 app.use('/api/pyp',pypRouter)
 app.use('/api/users', userRouter);
 app.use('/api/questions', questionRouter);
-// app.use('/api/answers', answerRouter);
+app.use('/api/answers', answerRouter);
 // app.use('/api/reply', replyRouter);
 
 export default app

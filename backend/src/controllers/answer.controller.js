@@ -1,9 +1,9 @@
 import asyncHandler from '../utils/asynchandler.utils.js';
-import ApiError from '../utils/API_Error.js';
-import ApiResponse from '../utils/API_Response.js';
-import Answer from '../models/answers.model.js';
-import Question from '../models/question.model.js';
-import User from '../models/user.model.js';
+import {ApiError} from '../utils/API_Error.js';
+import {ApiResponse} from '../utils/API_Response.js';
+import Answer from '../models/answers.models.js';
+import Question from '../models/question.models.js';
+import {User} from '../models/user.models.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 const addAnswer = asyncHandler(async (req, res) => {
