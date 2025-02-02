@@ -18,6 +18,11 @@ const userSchema = new Schema(
       trim: true,
       index: true,
     },
+    subjects: [
+      {
+        type: String
+      }
+    ],
     mobile: Number,
     profileImage: {
       type: String, // cloudinary url

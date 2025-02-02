@@ -70,10 +70,10 @@ export const insertDefaultVideos = async () => {
 export const getVideosByClassAndSubject = async (req, res) => {
     try {
       // Get parameters from the route (path params)
-      const { classNumber, subject } = req.params;
+      const { classNumber, subject ,module} = req.params;
       
       // Find the videos matching the class and subject
-      const videos = await Video.find({ class: classNumber, subject: subject }).sort({ module: 1 });
+      const videos = await Video.find({ class: classNumber, subject: subject ,module:module})
   
       if (videos.length === 0) {
         return res.status(404).json({ message: "No videos found for this class and subject." });

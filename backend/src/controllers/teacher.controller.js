@@ -3,7 +3,8 @@ import {ApiError} from "../utils/API_Error.js";
 import {ApiResponse} from "../utils/API_Response.js";
 import { User } from "../models/user.models.js"; // Teacher model
 import { Video } from "../models/Video.model.js"; // Video model
-import Question from "../models/question.models.js"; // Question model
+import Question from "../models/question.models.js";
+import  Answer from "../models/answers.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Cloudinary Upload Utility
 
 // Allow a teacher to register and select up to 2 subjects
@@ -39,41 +40,44 @@ const registerTeacher = asyncHandler(async (req, res) => {
 
 // Allow teacher to add videos (Admin approval required)
 const addVideo = asyncHandler(async (req, res) => {
-  const { title, description, subject } = req.body;
-  const teacherId = req.user._id;
-
-  // Ensure user is a teacher
-  const teacher = await User.findById(teacherId);
-  if (!teacher || teacher.user_type !== "teacher") {
-    throw new ApiError(403, "Only teachers can upload videos.");
-  }
-
-  if (!teacher.subjects.includes(subject)) {
-    throw new ApiError(403, "You can only upload videos for your chosen subjects.");
-  }
-
-  if (!req.file) {
-    throw new ApiError(400, "Video file is required.");
-  }
-
-  // Upload video to Cloudinary (or any other storage)
-  const uploadedVideo = await uploadOnCloudinary(req.file.path);
-  if (!uploadedVideo || !uploadedVideo.url) {
-    throw new ApiError(500, "Video upload failed.");
-  }
-
-  // Save video in database (pending admin approval)
-  const video = await Video.create({
-    title,
-    description,
-    subject,
-    videoUrl: uploadedVideo.url,
-    uploadedBy: teacherId,
-    approved: false, // Needs admin approval
+    const { title, description, subject, module, class: className } = req.body;
+    const teacherId = req.user._id;
+  
+    // Ensure user is a teacher
+    const teacher = await User.findById(teacherId);
+    if (!teacher || teacher.user_type !== "Teacher") {
+      throw new ApiError(403, "Only teachers can upload videos.");
+    }
+  
+    if (!teacher.subjects.includes(subject)) {
+      throw new ApiError(403, "You can only upload videos for your chosen subjects.");
+    }
+  
+    if (!req.file) {
+      throw new ApiError(400, "Video file is required.");
+    }
+  
+    // Upload video to Cloudinary (or any other storage)
+    const uploadedVideo = await uploadOnCloudinary(req.file.path);
+    if (!uploadedVideo || !uploadedVideo.url) {
+      throw new ApiError(500, "Video upload failed.");
+    }
+  
+    // Save video in database (pending admin approval)
+    const video = await Video.create({
+      title,
+      description,
+      subject,
+      module,
+      class: className, // Added class field
+      videoUrl: uploadedVideo.url,
+      uploadedBy: teacherId,
+      approved: false, // Needs admin approval
+    });
+  
+    res.status(201).json(new ApiResponse(201, { video }, "Video uploaded, awaiting admin approval."));
   });
-
-  res.status(201).json(new ApiResponse(201, { video }, "Video uploaded, awaiting admin approval."));
-});
+  
 
 // Allow admin to approve a video
 const approveVideo = asyncHandler(async (req, res) => {
