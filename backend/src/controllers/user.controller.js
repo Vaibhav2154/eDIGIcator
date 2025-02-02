@@ -87,7 +87,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     });
     
     const updateUserSchedule = asyncHandler(async (req, res) => {
-      const { bedTime, studyTime, schoolTime, goal, username } = req.body;
+      const { bedTime, studyTime, schoolTime, studyGoal, username } = req.body;
     
       // Check if userId is provided
       if (!username) {
@@ -105,7 +105,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
       if (studyTime) user.studyTime = new Date(studyTime);
       if (schoolTime?.start) user.schoolTime.start = new Date(schoolTime.start);
       if (schoolTime?.end) user.schoolTime.end = new Date(schoolTime.end);
-      if (goal) user.goal = goal; // Example: "Complete 2 chapters per day"
+      if (studyGoal) user.goal = studyGoal; // Example: "Complete 2 chapters per day"
     
       // Save updated user
       await user.save();
@@ -289,8 +289,9 @@ const generateAccessAndRefereshTokens = async (userId) => {
   });
   const getUserStats = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-
-    const user = await User.findById(userId).select("streak maxStreak");
+  
+    // Fetch user details including streak, maxStreak, wakeup time, study time, goal, and school time
+    const user = await User.findById(userId).select("streak maxStreak bedTime studyTime goal schoolTime");
   
     if (!user) {
       throw new ApiError(404, "User not found");
@@ -300,18 +301,22 @@ const generateAccessAndRefereshTokens = async (userId) => {
     const totalVideosWatched = await Video.countDocuments({ watchedBy: userId });
   
     // Count total questions asked by the user
-    //const totalQuestionsAsked = await Question.countDocuments({ owner: userId });
+    const totalQuestionsAsked = await Question.countDocuments({ owner: userId });
   
     // Count total questions answered by the user
-   // const totalQuestionsAnswered = await Question.countDocuments({ "answers.owner": userId });
+    const totalQuestionsAnswered = await Question.countDocuments({ "answers.owner": userId });
   
     res.status(200).json(
       new ApiResponse(200, {
         totalVideosWatched,
-        // totalQuestionsAsked,
-        // totalQuestionsAnswered,
+        totalQuestionsAsked,
+        totalQuestionsAnswered,
         streak: user.streak,
         maxStreak: user.maxStreak,
+        wakeUpTime: user.bedTime,  // Wakeup time is stored in bedTime
+        studyTime: user.studyTime,
+        studyGoal: user.goal,
+        schoolTime: user.schoolTime, // Includes both start & end time
       }, "User's activity stats fetched successfully")
     );
   });

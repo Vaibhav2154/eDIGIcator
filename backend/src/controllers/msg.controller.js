@@ -26,7 +26,7 @@ const studyReminderMessage = (user) => {
 };
 
 const wakeupMessage = (user) => {
-  return `Good morning ${user.fullName}! Here's what you have to study today: [Insert Study Plan]. Stay productive and motivated! 💪`;
+  return `Good morning ${user.fullName}! Here's a day to shine brighter. Stay productive and motivated! 💪`;
 };
 
 const sendMessagesAutomatically = async () => {
