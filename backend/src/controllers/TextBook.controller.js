@@ -47,7 +47,6 @@ export const insertDefaultTextbooks = async () => {
     }
 };
 
-// ✅ 2️⃣ Fetch Textbooks by Class & Subject
 export const getTextbooksByClassAndSubject = async (req, res) => {
     try {
         const { classNumber, subject } = req.params;
@@ -57,8 +56,12 @@ export const getTextbooksByClassAndSubject = async (req, res) => {
             return res.status(404).json({ message: "No textbooks found for this class and subject." });
         }
 
-        res.status(200).json(textbooks);
+        // Return only the textbook URLs
+        const textbookUrls = textbooks.map(textbook => textbook.textbookUrl);
+
+        res.status(200).json({ textbookUrls });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
 };
+

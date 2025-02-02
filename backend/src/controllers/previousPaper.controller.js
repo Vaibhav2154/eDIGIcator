@@ -26,18 +26,21 @@ export const insertDefaultPreviousPapers = async () => {
     }
 };
 
-// ✅ 2️⃣ Fetch Previous Year Papers by Class & Subject
 export const getPreviousPapersByClassAndSubject = async (req, res) => {
     try {
         const { classNumber, subject } = req.params;
         const previousPapers = await PreviousPaper.find({ class: classNumber, subject }).sort({ subject: 1 });
 
         if (previousPapers.length === 0) {
-            return res.status(404).json({ message: "No previous year papers found for this class and subject." });
+            return res.status(404).json({ message: "No previous papers found for this class and subject." });
         }
 
-        res.status(200).json(previousPapers);
+        // Return only the PDF URLs
+        const pdfUrls = previousPapers.map(paper => paper.pdfUrl);
+
+        res.status(200).json({ pdfUrls });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
 };
+
