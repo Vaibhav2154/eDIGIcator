@@ -8,7 +8,7 @@ import 'package:edigicator/pages/latestnewspage.dart';
 import 'package:edigicator/pages/chat_page.dart'; // Import Chatbot Page
 import 'package:edigicator/pages/compihome.dart' as compi;
 import 'package:edigicator/pages/syllabushome.dart';// Import Compihome Page
-
+import 'package:edigicator/pages/profilepage.dart';
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -136,7 +136,7 @@ class HomePage extends ConsumerStatefulWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  compi.Compihome(),), // Navigate to Compihome
+                        MaterialPageRoute(builder: (context) =>  compi.CompetitiveExamScreen(),), // Navigate to Compihome
                       );
                     },
                     child: _buildImageCard('assets/competitve.jpg', getTranslatedText('Competitive', 'ಸ್ಪರ್ಧಾತ್ಮಕ')),
@@ -146,10 +146,11 @@ class HomePage extends ConsumerStatefulWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  Syllabushome()), // Navigate to SyllabusHome
-                      );
+                      Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => SyllabusHomePage()),
+);
+
                     },
                     child: _buildImageCard('assets/syllabus.jpg', getTranslatedText('Syllabus', 'ಅಭ್ಯಾಸಕ್ರಮ')),
                   ),
@@ -224,7 +225,7 @@ class HomePage extends ConsumerStatefulWidget {
 
     switch (index) {
       case 0:
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfilePage()));
         break;
       case 1:
         break;

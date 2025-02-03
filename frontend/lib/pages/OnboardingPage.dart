@@ -3,29 +3,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:edigicator/pages/HomePage.dart';
-import 'package:edigicator/services/language_provider.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
-  const OnboardingPage({super.key});
+
+  const OnboardingPage({super.key, required this.username});
+  final dynamic username;
 
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
 }
 
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
-  TimeOfDay? wakeUpTime;
   TimeOfDay? bedTime;
   TimeOfDay? studyTime;
-  final TextEditingController schoolTimeController = TextEditingController();
-  final TextEditingController goalController = TextEditingController();
+  final TextEditingController schoolStartTime = TextEditingController();
+  final TextEditingController schoolEndTime = TextEditingController();
+  final TextEditingController studyGoal = TextEditingController();
   bool _isLoading = false;
 
   String _timeOfDayToString(TimeOfDay? time) {
-    if (time == null) return 'Select Time';
+    if (time == null) return '';
     final now = DateTime.now();
-    return DateFormat('HH:mm').format(DateTime(now.year, now.month, now.day, time.hour, time.minute));
+    return DateTime(now.year, now.month, now.day, time.hour, time.minute).toIso8601String();
   }
 
   Future<void> _selectTime(BuildContext context, Function(TimeOfDay) onTimeSelected) async {
@@ -43,16 +45,28 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   Future<void> _saveSchedule() async {
     setState(() => _isLoading = true);
 
-    final String apiUrl = "http://10.0.2.2:8000/updateUserSchedule"; // Adjust port if needed
+    final String apiUrl = "http://10.0.2.2:8000/api/users/updateSchedule"; // Match backend
+
+    final prefs = await SharedPreferences.getInstance();
+    final String? userId = prefs.getString('userId'); // Retrieve user ID
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: User ID not found")),
+      );
+      setState(() => _isLoading = false);
+      return;
+    }
 
     final Map<String, dynamic> requestData = {
-      "wakeUpTime": wakeUpTime != null ? _timeOfDayToString(wakeUpTime) : null,
-      "bedTime": bedTime != null ? _timeOfDayToString(bedTime) : null,
-      "studyTime": studyTime != null ? _timeOfDayToString(studyTime) : null,
-      "schoolTime": schoolTimeController.text.isNotEmpty
-          ? schoolTimeController.text
-          : null,
-      "studyGoal": goalController.text.trim().isNotEmpty ? goalController.text.trim() : null,
+      "userId": userId, // Send user ID
+      "bedtime": bedTime != null ? _timeOfDayToString(bedTime) : null,
+      "studytime": studyTime != null ? _timeOfDayToString(studyTime) : null,
+      "schooltime": {
+        "start": schoolStartTime.text.isNotEmpty ? schoolStartTime.text : null,
+        "end": schoolEndTime.text.isNotEmpty ? schoolEndTime.text : null,
+      },
+      "studyGoal": studyGoal.text.trim().isNotEmpty ? studyGoal.text.trim() : null,
     };
 
     try {
@@ -85,43 +99,43 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Daily Schedule"),
-      ),
+      appBar: AppBar(title: Text("Daily Schedule")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             ListTile(
-              title: Text("Wake-up Time"),
-              subtitle: Text(_timeOfDayToString(wakeUpTime)),
-              trailing: Icon(Icons.access_alarm),
-              onTap: () => _selectTime(context, (time) => setState(() => wakeUpTime = time)),
-            ),
-            ListTile(
               title: Text("Bed Time"),
-              subtitle: Text(_timeOfDayToString(bedTime)),
+              subtitle: Text(bedTime != null ? _timeOfDayToString(bedTime) : 'Select Time'),
               trailing: Icon(Icons.bedtime),
               onTap: () => _selectTime(context, (time) => setState(() => bedTime = time)),
             ),
             ListTile(
               title: Text("Study Time"),
-              subtitle: Text(_timeOfDayToString(studyTime)),
+              subtitle: Text(studyTime != null ? _timeOfDayToString(studyTime) : 'Select Time'),
               trailing: Icon(Icons.school),
               onTap: () => _selectTime(context, (time) => setState(() => studyTime = time)),
             ),
             TextField(
-              controller: schoolTimeController,
+              controller: schoolStartTime,
               decoration: InputDecoration(
-                labelText: "School Timings (e.g. 9:00 AM - 3:00 PM)",
+                labelText: "School Start Time (e.g. 9:00 AM)",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: schoolEndTime,
+              decoration: InputDecoration(
+                labelText: "School End Time (e.g. 3:00 PM)",
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 20),
             TextField(
-              controller: goalController,
+              controller: studyGoal,
               decoration: InputDecoration(
-                labelText: "What is your life goal?",
+                labelText: "Study Goal",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -138,8 +152,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   @override
   void dispose() {
-    schoolTimeController.dispose();
-    goalController.dispose();
+    schoolStartTime.dispose();
+    schoolEndTime.dispose();
+    studyGoal.dispose();
     super.dispose();
   }
 }

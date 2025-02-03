@@ -1,5 +1,5 @@
+import 'package:edigicator/pages/HomePage.dart';
 import 'package:flutter/material.dart';
-import 'package:edigicator/pages/OnboardingPage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:edigicator/pages/authentication/RegisterPageSyllabus.dart';
@@ -31,13 +31,13 @@ class _LoginPageState extends State<LoginPage> {
         // On success, navigate to OnboardingPage
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const OnboardingPage()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        print('Login failed: ${response.statusCode}');
+        print('Login failed: ${response}');
         // Display error message (can be improved with a UI)
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: ${response.body}')),
+          SnackBar(content: Text('Login failed: ${response}')),
         );
       }
     } catch (e) {

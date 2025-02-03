@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:edigicator/pages/OnboardingPage.dart'; // Import OnboardingPage
-import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
@@ -23,14 +22,8 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
   String selectedUserType = "Student"; // Default usertype
   File? _profileImage;
 
-  final List<num> classList = [
-    5, 6, 7, 8, 9, 10, 11, 12
-  ];
-
-  final List<String> userTypeList = [
-    "Teacher",
-    "Student",
-  ];
+  final List<num> classList = [5, 6, 7, 8, 9, 10, 11, 12];
+  final List<String> userTypeList = ["Teacher", "Student"];
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -62,26 +55,29 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
       request.fields['username'] = usernameController.text;
       request.fields['password'] = passwordController.text;
       request.fields['userClass'] = selectedClass.toString(); // Convert to string for request
-      request.fields['user_type'] = selectedUserType; // Send user type
+      request.fields['user_type'] = selectedUserType; // Default to student
 
       var response = await request.send();
 
       if (response.statusCode == 201) {
-        // On success, navigate to OnboardingPage
+        // Convert response to JSON to extract username
+        final responseData = jsonDecode(await response.stream.bytesToString());
+
+        String username = responseData["username"]; // Extract username from API response
+
+        // On success, navigate to OnboardingPage with username
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const OnboardingPage()),
+          MaterialPageRoute(builder: (context) => OnboardingPage(username: username)),
         );
       } else {
         print('Registration failed: ${response.statusCode}');
-        // Display error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Registration failed: ${response.statusCode}')),
         );
       }
     } catch (e) {
       print('Error: $e');
-      // Display error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
@@ -114,9 +110,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               controller: nameController,
               decoration: InputDecoration(
                 labelText: 'Full Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.person_outline),
               ),
             ),
@@ -125,9 +119,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               controller: phoneController,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.phone),
               ),
             ),
@@ -136,9 +128,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               controller: usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.person_outline),
               ),
             ),
@@ -148,9 +138,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.lock),
               ),
             ),
@@ -162,8 +150,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                   selectedClass = newValue!;
                 });
               },
-              items: classList
-                  .map<DropdownMenuItem<num>>((num value) {
+              items: classList.map<DropdownMenuItem<num>>((num value) {
                 return DropdownMenuItem<num>(
                   value: value,
                   child: Text(value.toString()),
@@ -178,8 +165,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
                   selectedUserType = newValue!;
                 });
               },
-              items: userTypeList
-                  .map<DropdownMenuItem<String>>((String value) {
+              items: userTypeList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -191,8 +177,7 @@ class _RegisterPageSyllabusState extends State<RegisterPageSyllabus> {
               onPressed: _pickImage,
               child: const Text("Pick Profile Image"),
             ),
-            if (_profileImage != null)
-              Image.file(_profileImage!, height: 100, width: 100),
+            if (_profileImage != null) Image.file(_profileImage!, height: 100, width: 100),
             const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,

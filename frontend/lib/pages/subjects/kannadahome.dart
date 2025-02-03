@@ -1,53 +1,65 @@
-import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
-// Import the HomePage widget
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:edigicator/services/language_provider.dart';
 
 class KannadaHome extends ConsumerStatefulWidget {
-  const KannadaHome({super.key});
+  final int selectedClass; // Receive the selected class
+  final String subject; // Receive subject name
+
+  const KannadaHome({super.key, required this.selectedClass, required this.subject});
 
   @override
   _KannadaHomeState createState() => _KannadaHomeState();
 }
 
 class _KannadaHomeState extends ConsumerState<KannadaHome> {
-  int _selectedIndex = 0; // To keep track of the selected tab
-
-  // List of pages corresponding to the tabs
-  final List<Widget> _pages = [
-    const Center(child: Text('Resources')), // Placeholder for Resources page
-  ];
+  int _selectedIndex = 0; // Track selected tab index
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update selected tab index
+      _selectedIndex = index;
     });
 
-    // If the 'Home' tab is tapped, navigate back to the HomePage
+    // If "Home" tab is selected, navigate back
     if (index == 0) {
-      Navigator.pop(context); // This will pop the current page and navigate back
+      Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      Center(
+        child: Text(
+          getTranslatedText(
+            ref, 
+            'Class ${widget.selectedClass} ${widget.subject} Syllabus', 
+            'ಶ್ರೇಣಿಯ ${widget.selectedClass} ${widget.subject} ಪಠ್ಯಕ್ರಮ'
+          ),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ResourcesPage(selectedClass: widget.selectedClass, subject: widget.subject), // Pass subject parameter
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          getTranslatedText(ref, 'Kannada Syllabus', 'ಕನ್ನಡ ಸಿಲಬಸ್'),
+          getTranslatedText(ref, '${widget.subject} Syllabus', '${widget.subject} ಪಠ್ಯಕ್ರಮ'),
         ),
       ),
-      body: _pages[_selectedIndex], // Render the selected page
+      body: _pages[_selectedIndex], // Display the selected page
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex, // Highlight the selected tab
-        onTap: _onItemTapped, // Handle tab change
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home), // Icon for Home
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_books), // Icon for Resources
+            icon: Icon(Icons.library_books),
             label: 'Resources',
           ),
         ],
@@ -55,9 +67,27 @@ class _KannadaHomeState extends ConsumerState<KannadaHome> {
     );
   }
 
-  // Helper function to get translated text based on the current language
+  // Helper function for language translation
   String getTranslatedText(WidgetRef ref, String enText, String knText) {
     final String currentLanguage = ref.watch(languageProvider);
     return currentLanguage == "kn" ? knText : enText;
+  }
+}
+
+// Resources Page with class-based content
+class ResourcesPage extends StatelessWidget {
+  final int selectedClass;
+  final String subject;
+
+  const ResourcesPage({super.key, required this.selectedClass, required this.subject});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        '$subject Resources for Class $selectedClass',
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }
