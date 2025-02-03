@@ -3,9 +3,12 @@ import asyncHandler from "../utils/asynchandler.utils.js";
 import {ApiError} from "../utils/API_Error.js";
 import { User } from "../models/user.models.js";
 import { Video } from "../models/Video.model.js";
+import { OTP } from "../models/OTP.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/API_Response.js";
+import { generateOTP } from "../utils/generateOTP.js";
 import jwt from "jsonwebtoken";
+import twilio from "twilio";
 const generateAccessAndRefereshTokens = async (userId) => {
     try {
       const user = await User.findById(userId);
@@ -85,7 +88,43 @@ const generateAccessAndRefereshTokens = async (userId) => {
           new ApiResponse(200, { createdUser }, "User registered successfully"),
         );
     });
-    
+
+    const sendOTP = async (req, res) => {
+      const mobileNumber= req.body.mobileNumber;
+      const otp=generateOTP();
+      await OTP.create({ mobileNumber, otp, createdAt: new Date() });
+      const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_API_KEY_SECRET;
+  const Twilio_Number = process.env.TWILIO_NUMBER;
+  const client = twilio(accountSid, authToken);
+  try {
+      const message = await client.messages.create({
+          body: `Your OTP is: ${otp}`, // Use template literals to include OTP
+          to: `+91${mobileNumber}`, 
+          from: Twilio_Number });
+  
+      res.json({ success: true, messageSid: message.sid });
+  } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+  }
+  };
+  // OTP verification function
+  const verifyOTP = async (mobileNumber, enteredOTP) => {
+      console.log('Searching for OTP with mobile number:', mobileNumber);
+      const record = await OTP.findOne({ mobileNumber }).setOptions({ bypassHooks: true }).sort({ createdAt: -1 });
+      console.log(record);
+      if (!record || record.otp !== enteredOTP) {
+          return { success: false, message: 'Invalid OTP' };
+      }
+  
+      const isExpired = (new Date() - record.createdAt) > 5 * 60 * 1000; // 5 minutes expiry
+      if (isExpired) {
+          return { success: false, message: 'OTP expired' };
+      }
+  
+      return { success: true, message: 'OTP verified' };
+  };
+  
     const updateUserSchedule = asyncHandler(async (req, res) => {
       const { bedTime, studyTime, schoolTime, studyGoal, username } = req.body;
     
@@ -113,71 +152,80 @@ const generateAccessAndRefereshTokens = async (userId) => {
       res.status(200).json(new ApiResponse(200, user, "User schedule updated successfully."));
     });
     
-  const loginUser = asyncHandler(async (req, res) => {
-    const { username, password} = req.body;
-    if (!username) {
-      throw new ApiError(400, "username is required");
-    }
-    const user = await User.findOne({
-      $or: [{ username }],
-    });
-    if (!user) {
-      throw new ApiError(404, "User does not exist");
-    }
+    const loginUser = asyncHandler(async (req, res) => {
+      const { username, password, enteredOTP } = req.body;
   
-    const isPasswordValid = await user.isPasswordCorrect(password);
+      if (!username) {
+          throw new ApiError(400, "Username is required");
+      }
   
-    if (!isPasswordValid) {
-      throw new ApiError(401, "Invalid user credentials");
-    }
-    // Streak logic
-    const now = new Date();
-    const lastLogin = user.lastLoginDate;
-    const diffInHours = lastLogin ? (now - lastLogin) / (1000 * 60 * 60) : null;
+      const user = await User.findOne({ username });
   
-    if (diffInHours !== null && diffInHours >= 24 && diffInHours < 48) {
-      user.streak += 1; // Continue streak
-    } else if (diffInHours !== null && diffInHours >= 48) {
-      user.streak = 1; // Reset streak
-    } else if (!lastLogin) {
-      user.streak = 1; // First login
-    }
+      if (!user) {
+          throw new ApiError(404, "User does not exist");
+      }
   
-    if (user.streak > user.maxStreak) {
-      user.maxStreak = user.streak; // Update max streak
-    }
+      const isPasswordValid = await user.isPasswordCorrect(password);
+      if (!isPasswordValid) {
+          throw new ApiError(401, "Invalid user credentials");
+      }
   
-    user.lastLoginDate = now;
-    await user.save();
-
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-      user._id,
-    );
+      // 🔹 Ensure OTP is provided
+      if (!enteredOTP) {
+          throw new ApiError(400, "OTP is required for login");
+      }
   
-    const loggedInUser = await User.findById(user._id).select(
-      "-password -refreshToken",
-    );
+      // 🔹 Verify OTP using the existing `verifyOTP` function
+      const otpVerification = await verifyOTP(user.mobile, enteredOTP);
+      if (!otpVerification.success) {
+          throw new ApiError(400, otpVerification.message);
+      }
   
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
+      // 🔹 Streak logic (Unchanged)
+      const now = new Date();
+      const lastLogin = user.lastLoginDate;
+      const diffInHours = lastLogin ? (now - lastLogin) / (1000 * 60 * 60) : null;
   
-    return res
-      .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
-      .json(
-        new ApiResponse(
-          200,
-          {
-            user: loggedInUser,
-            accessToken,
-            refreshToken,
-          },
-          "User logged In Successfully",
-        ),
-      );
+      if (diffInHours !== null && diffInHours >= 24 && diffInHours < 48) {
+          user.streak += 1; // Continue streak
+      } else if (diffInHours !== null && diffInHours >= 48) {
+          user.streak = 1; // Reset streak
+      } else if (!lastLogin) {
+          user.streak = 1; // First login
+      }
+  
+      if (user.streak > user.maxStreak) {
+          user.maxStreak = user.streak; // Update max streak
+      }
+  
+      user.lastLoginDate = now;
+      await user.save();
+  
+      // 🔹 Generate access & refresh tokens after OTP verification
+      const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+  
+      const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+  
+      const options = {
+          httpOnly: true,
+          secure: true,
+      };
+  
+      return res
+          .status(200)
+          .cookie("accessToken", accessToken, options)
+          .cookie("refreshToken", refreshToken, options)
+          .json(
+              new ApiResponse(
+                  200,
+                  {
+                      user: loggedInUser,
+                      accessToken,
+                      refreshToken,
+                  },
+                  "User logged in successfully after OTP verification"
+              )
+          );
   });
   
   const logoutUser = asyncHandler(async (req, res) => {
@@ -392,5 +440,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     updateAccountDetails,
     updateUserDP, 
     updateUserSchedule,
+    sendOTP,
+    verifyOTP
   };
   

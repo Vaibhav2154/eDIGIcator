@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const msgSchema = new mongoose.Schema({
     mobileNumber: { type: String, required: true },
-    otp: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now, expires: '5m' }, // Automatically deletes after 5 minutes
+    msg_content: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now}
 });
 
-export const OTP= mongoose.model('MSG', msgSchema);
+export const MSG= mongoose.model('MSG', msgSchema);

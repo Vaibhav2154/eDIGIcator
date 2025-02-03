@@ -46,7 +46,7 @@ const userSchema = new Schema(
     user_type: {
       type: String,
       required: true,
-      enum: ["Student", "Teacher", "Admin"],
+      enum: ["Student", "Teacher", "Admin", "user"],
     },
     lastLoginDate: {
       type: Date,

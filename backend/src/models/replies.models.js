@@ -17,4 +17,4 @@ const replySchema= new mongoose.Schema(
    },{timestamps:true} 
 )
 
-export const Reply= new mongoose.model("Reply", replySchema);
+export const Reply= mongoose.model("Reply", replySchema);
