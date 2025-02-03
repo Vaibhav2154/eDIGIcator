@@ -1,11 +1,10 @@
 import express from "express";
 import { askChatbot } from "../controllers/chatbot.controller.js";
-//import { verifyUser } from "../middleware/auth.middleware.js"; // Middleware for authentication
-import { verifyJWT } from "../middleware/auth.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js"; // Middleware for authentication
 
 const router = express.Router();
 
-// ✅ 1️⃣ Ask the Chatbot (Requires Authentication)
-router.post("/ask", verifyJWT, askChatbot);
+router.post('/analyze-and-answer', askChatbot);
+
 
 export default router;
