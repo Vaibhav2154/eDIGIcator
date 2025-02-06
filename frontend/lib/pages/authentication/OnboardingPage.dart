@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:edigicator/pages/HomePage.dart';
+import 'package:edigicator/pages/home/HomePage.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
 

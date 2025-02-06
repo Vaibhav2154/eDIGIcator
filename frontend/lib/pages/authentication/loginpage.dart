@@ -1,4 +1,5 @@
-import 'package:edigicator/pages/HomePage.dart';
+import 'package:edigicator/configs/AppColors.dart';
+import 'package:edigicator/pages/home/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -100,6 +101,9 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: _loginUser,
                 child: const Text('Login', style: TextStyle(fontSize: 18)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 83, 171, 243),
+                ),
               ),
             ),
             const SizedBox(height: 20),

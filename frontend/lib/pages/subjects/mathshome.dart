@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:edigicator/services/language_provider.dart';
 import 'package:edigicator/pages/modulespage.dart';
-import 'package:edigicator/pages/resource_page.dart'; // Import ResourcesPage
+import 'package:edigicator/pages/resources/resource_page.dart'; // Import ResourcesPage
 
 class MathsHome extends ConsumerStatefulWidget {
   final int selectedClass;
