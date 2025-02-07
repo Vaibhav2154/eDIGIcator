@@ -114,150 +114,152 @@ class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
             ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DropdownButton<String>(
-                  value: selectedMode,
-                  items: ["Module-Wise Practice", "Final Exam Preparation"]
-                      .map((mode) => DropdownMenuItem(
-                            value: mode,
-                            child: Text(mode),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMode = value!;
-                    });
-                  },
-                ),
-                SizedBox(height: 20),
-                if (selectedMode == "Module-Wise Practice")
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Select Subject"),
-                      DropdownButton<String>(
-                        value: selectedSubject,
-                        items: ["Mathematics", "Science", "Social Science", "English"]
-                            .map((subject) => DropdownMenuItem(
-                                  value: subject,
-                                  child: Text(subject),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedSubject = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      Text("Select Chapter"),
-                      DropdownButton<String>(
-                        value: selectedChapter,
-                        items: _getChaptersForSubject(selectedSubject)
-                            .map((chapter) => DropdownMenuItem(
-                                  value: chapter,
-                                  child: Text(chapter),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedChapter = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _generatePaper,
-                        child: Text('Generate Question Paper'),
-                      ),
-                      if (generatedQuestions.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 20),
-                            Text(
-                              "Generated Questions",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              generatedQuestions,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _uploadImage,
-                              child: Text('Upload Answer Image'),
-                            ),
-                            if (uploadedImage != null)
-                              Column(
-                                children: [
-                                  SizedBox(height: 10),
-                                  Image.file(uploadedImage!, height: 100),
-                                  SizedBox(height: 10),
-                                  ElevatedButton(
-                                    onPressed: () => _analyzeAnswer(generatedQuestions.split("\n").first),
-                                    child: Text('Analyze Answer'),
-                                  ),
-                                ],
-                              ),
-                            if (feedback.isNotEmpty)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 20),
-                                  Text(
-                                    "Feedback:",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(feedback, style: TextStyle(fontSize: 16)),
-                                ],
-                              ),
-                          ],
-                        ),
-                    ],
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DropdownButton<String>(
+                    value: selectedMode,
+                    items: ["Module-Wise Practice", "Final Exam Preparation"]
+                        .map((mode) => DropdownMenuItem(
+                              value: mode,
+                              child: Text(mode),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedMode = value!;
+                      });
+                    },
                   ),
-                if (selectedMode == "Final Exam Preparation")
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Select Class"),
-                      DropdownButton<int>(
-                        value: selectedClass,
-                        items: List.generate(8, (index) => DropdownMenuItem(
-                              value: index + 5,
-                              child: Text('Class ${index + 5}'),
-                            )),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedClass = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _generatePaper,
-                        child: Text('Generate Question Paper'),
-                      ),
-                      if (generatedQuestions.isNotEmpty)
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Text(
-                              generatedQuestions,
-                              style: TextStyle(fontSize: 16),
+                  SizedBox(height: 20),
+                  if (selectedMode == "Module-Wise Practice")
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Select Subject"),
+                        DropdownButton<String>(
+                          value: selectedSubject,
+                          items: ["Mathematics", "Science", "Social Science", "English"]
+                              .map((subject) => DropdownMenuItem(
+                                    value: subject,
+                                    child: Text(subject),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedSubject = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 10),
+                        Text("Select Chapter"),
+                        DropdownButton<String>(
+                          value: selectedChapter,
+                          items: _getChaptersForSubject(selectedSubject)
+                              .map((chapter) => DropdownMenuItem(
+                                    value: chapter,
+                                    child: Text(chapter),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedChapter = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _generatePaper,
+                          child: Text('Generate Question Paper'),
+                        ),
+                        if (generatedQuestions.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 20),
+                              Text(
+                                "Generated Questions",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                generatedQuestions,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: _uploadImage,
+                                child: Text('Upload Answer Image'),
+                              ),
+                              if (uploadedImage != null)
+                                Column(
+                                  children: [
+                                    SizedBox(height: 10),
+                                    Image.file(uploadedImage!, height: 100),
+                                    SizedBox(height: 10),
+                                    ElevatedButton(
+                                      onPressed: () => _analyzeAnswer(generatedQuestions.split("\n").first),
+                                      child: Text('Analyze Answer'),
+                                    ),
+                                  ],
+                                ),
+                              if (feedback.isNotEmpty)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 20),
+                                    Text(
+                                      "Feedback:",
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(feedback, style: TextStyle(fontSize: 16)),
+                                  ],
+                                ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  if (selectedMode == "Final Exam Preparation")
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Select Class"),
+                        DropdownButton<int>(
+                          value: selectedClass,
+                          items: List.generate(8, (index) => DropdownMenuItem(
+                                value: index + 5,
+                                child: Text('Class ${index + 5}'),
+                              )),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedClass = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _generatePaper,
+                          child: Text('Generate Question Paper'),
+                        ),
+                        if (generatedQuestions.isNotEmpty)
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Text(
+                                generatedQuestions,
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                if (isLoading)
-                  Center(child: CircularProgressIndicator()),
-              ],
+                      ],
+                    ),
+                  if (isLoading)
+                    Center(child: CircularProgressIndicator()),
+                ],
+              ),
             ),
           ),
         ),

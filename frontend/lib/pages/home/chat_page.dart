@@ -144,7 +144,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     margin: EdgeInsets.all(8.0),
                     padding: EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
-                      color: message.isUser ? Colors.blue[200] : Colors.grey[300],
+                      color: message.isUser ? Colors.blue[200] : const Color.fromARGB(255, 57, 84, 235),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Column(
