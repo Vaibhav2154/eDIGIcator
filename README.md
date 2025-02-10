@@ -1,5 +1,5 @@
-📌 Project Name: Digital Literacy & Personalized Learning for Rural Students
-A MERN-based educational platform with AI-powered chatbots for personalized learning in rural areas.
+📌 Project Description: Digital Literacy & Personalized Learning for Rural Students
+A Flutter & Node based educational platform with AI-powered chatbots for personalized learning in rural areas.
 
 📖 Table of Contents
 🚀 Introduction
@@ -12,6 +12,7 @@ A MERN-based educational platform with AI-powered chatbots for personalized lear
 📈 Scalability & Future Enhancements
 🤝 Contributing
 📜 License
+
 🚀 Introduction
 This project aims to bridge the digital divide in rural education by providing personalized learning through AI-powered chatbots. It integrates speech-to-text, language translation, and resource-based AI learning to deliver a seamless experience for students with limited internet access.
 
