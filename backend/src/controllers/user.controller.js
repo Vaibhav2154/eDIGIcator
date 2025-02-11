@@ -170,16 +170,14 @@ const generateAccessAndRefereshTokens = async (userId) => {
           throw new ApiError(401, "Invalid user credentials");
       }
   
-      // 🔹 Ensure OTP is provided
-      if (!enteredOTP) {
-          throw new ApiError(400, "OTP is required for login");
-      }
+      // if (!enteredOTP) {
+      //     throw new ApiError(400, "OTP is required for login");
+      // }
   
-      // 🔹 Verify OTP using the existing `verifyOTP` function
-      const otpVerification = await verifyOTP(user.mobile, enteredOTP);
-      if (!otpVerification.success) {
-          throw new ApiError(400, otpVerification.message);
-      }
+      // const otpVerification = await verifyOTP(user.mobile, enteredOTP);
+      // if (!otpVerification.success) {
+      //     throw new ApiError(400, otpVerification.message);
+      // }
   
       // 🔹 Streak logic (Unchanged)
       const now = new Date();

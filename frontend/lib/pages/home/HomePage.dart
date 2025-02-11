@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'package:edigicator/configs/AppColors.dart';
 import 'package:edigicator/services/translation_service.dart';
 import 'package:edigicator/services/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:edigicator/pages/latestnewspage.dart';
-import 'package:edigicator/pages/chat_page.dart'; // Import Chatbot Page
-import 'package:edigicator/pages/compihome.dart' as compi;
+import 'package:edigicator/pages/home/latestnewspage.dart';
+import 'package:edigicator/pages/home/chat_page.dart'; // Import Chatbot Page
+import 'package:edigicator/pages/home/compihome.dart' as compi;
 import 'package:edigicator/pages/syllabushome.dart';// Import Compihome Page
-import 'package:edigicator/pages/profilepage.dart';
+import 'package:edigicator/pages/home/profilepage.dart';
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -57,8 +59,8 @@ class HomePage extends ConsumerStatefulWidget {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
-              child: Image.asset(
-                'assets/edigicatorlogo.png',
+              child: SvgPicture.asset(
+                'assets/eDigicator_logo.svg',
                 height: 50,
               ),
             ),
@@ -139,7 +141,7 @@ class HomePage extends ConsumerStatefulWidget {
                         MaterialPageRoute(builder: (context) =>  compi.CompetitiveExamScreen(),), // Navigate to Compihome
                       );
                     },
-                    child: _buildImageCard('assets/competitve.jpg', getTranslatedText('Competitive', 'ಸ್ಪರ್ಧಾತ್ಮಕ')),
+                    child: _buildImageCard('assets/syllabus.jpg', getTranslatedText('Competitive', 'ಸ್ಪರ್ಧಾತ್ಮಕ')),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -152,7 +154,7 @@ class HomePage extends ConsumerStatefulWidget {
 );
 
                     },
-                    child: _buildImageCard('assets/syllabus.jpg', getTranslatedText('Syllabus', 'ಅಭ್ಯಾಸಕ್ರಮ')),
+                    child: _buildImageCard('assets/JEE.jpg', getTranslatedText('Syllabus', 'ಅಭ್ಯಾಸಕ್ರಮ')),
                   ),
                 ),
               ],
@@ -196,7 +198,7 @@ class HomePage extends ConsumerStatefulWidget {
             borderRadius: BorderRadius.circular(15),
             child: Image.asset(
               imagePath,
-              height: 160,
+              height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
             ),

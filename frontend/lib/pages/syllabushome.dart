@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:edigicator/pages/subjectselection.dart'; // Import the next page
+import 'package:edigicator/pages/subjects/subjectselection.dart'; // Import the next page
 
 class SyllabusHomePage extends StatelessWidget {
   @override

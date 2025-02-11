@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:edigicator/pages/OnboardingPage.dart'; // Import OnboardingPage
+import 'package:edigicator/pages/authentication/OnboardingPage.dart'; // Import OnboardingPage
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 

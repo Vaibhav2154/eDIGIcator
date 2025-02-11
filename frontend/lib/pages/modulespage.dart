@@ -22,7 +22,7 @@ class _YoutubeVideoPlayerFlutterState extends State<YoutubeVideoPlayerFlutter> {
   }
 
   Future<void> fetchVideoUrl() async {
-    var uri = Uri.parse("http://10.0.2.2:8000/api/videos/videos/8/Mathematics/1");
+    var uri = Uri.parse("http://10.0.2.2:8000/api/videos/videos/8/Science/1");
 
     try {
       final response = await http.get(uri);

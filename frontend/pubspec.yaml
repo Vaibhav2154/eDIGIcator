@@ -45,6 +45,7 @@ dependencies:
   youtube_player_flutter: ^9.1.1
   flutter_inappwebview: ^6.1.5
   url_launcher: ^6.3.1
+  flutter_svg: 
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,9 @@ flutter:
     - assets/edigicatorlogo.png
     - assets/syllabus.jpg
     - assets/competitve.jpg
+    - assets/eDigicator_logo.svg
+    - assets/JEE.jpg
+    - assets/NCERT.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
